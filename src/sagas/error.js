@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime" 
 import { delay } from 'redux-saga'
-import { takeEvery } from 'redux-saga/effects'
+import { put, takeEvery } from 'redux-saga/effects'
 import { 
     ERROR,
     CLEAR_ERROR
