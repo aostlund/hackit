@@ -15,13 +15,7 @@ import {
 import firebase from 'firebase'
 
 export function* delayedGet({payload: {start, perPage, score}}) {
-    // let data = yield firebase.database().ref('posts').once('value').then(snapshot => snapshot.val())   
-    // data = _.map(data, (val, id) =>  { return { id: id, ...val } })
-    // yield put({ type: GET_POSTS, payload: data })
-    console.log(start, perPage)
     let data = yield firebase.database().ref('posts').orderByChild('score').endAt(score, start).limitToLast(perPage).once('value').then(snapshot => snapshot.val())
-    let a = yield firebase.database().ref('posts').orderByChild('score').endAt(99, '-').once('value').then(snapshot => snapshot.forEach(a => console.log(a.val())))
-    console.log(a)
     data = _.map(data, (val, id) =>  { return { id: id, ...val } })
     data = data.sort((a,b) => a.id > b.id ? 1 : -1)
     yield put({ type: GET_POSTS, payload: data })

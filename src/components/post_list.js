@@ -22,14 +22,12 @@ class PostList extends Component {
         .map(post => {
             return (
                 <div className="box">
-                    <p>post id: {post.id}</p>
                     <Post key={post.id} {...post} changeScore={this.props.changeScore} />
                 </div>
             )
     })
 
     getPrev = () => {
-        console.log(this.state.prevStart.slice(-1))
         this.props.getPosts({start: this.state.prevStart.slice(-1)[0], score: this.state.prevScore.slice(-1)[0], perPage: this.state.perPage })
         this.setState({
             prevStart: this.state.prevStart.slice(0, -1),
@@ -68,7 +66,6 @@ class PostList extends Component {
     }
 
     render() {
-        console.log(this.state)
         if (this.props.posts.posts) {
             return (
                 <div className="block">

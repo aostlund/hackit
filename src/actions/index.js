@@ -124,7 +124,6 @@ export function sendError(payload) {
 }
 
 export function numPosts() {
-    console.log('actions numPosts')
     return {
         type: GET_NUM_POSTS
     }
