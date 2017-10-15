@@ -7,6 +7,7 @@ import {
     LOGIN_USER,
     LOGOUT_USER,
     SIGNUP_USER,
+    ERROR
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -27,7 +28,6 @@ export function* watchTrackUserStatus() {
                 }
                 emit({ user })
             }
-            // error => emit({ error })
         )
         return unsubscribe;
     });
@@ -46,7 +46,10 @@ export function* trackUserStatus({ user }) {
 }
 
 export function* loginUser({ payload: {email, password} }) {
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    let error = yield firebase.auth().signInWithEmailAndPassword(email, password).catch(error => error)
+    if (error.message) {
+        yield put({ type: ERROR, payload: error.message})
+    }
 }
 
 export function* watchLoginUser() {
@@ -62,17 +65,31 @@ export function* watchLogoutUser() {
 }
 
 export function* signupUser({ payload: {displayname, email, password, history } }) {
-    yield firebase.auth().createUserWithEmailAndPassword(email, password)
-    let error = yield firebase.auth().currentUser.updateProfile({
-        displayName: displayname
-    }).catch(error => error)
-    if (error) {
+    if (displayname != '') {
+        let error = yield firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => error)
+        if (error.message) {
+            yield put({
+                type: ERROR,
+                payload: error.message
+            })
+        } else {
+            error = yield firebase.auth().currentUser.updateProfile({
+                displayName: displayname
+            }).catch(error => error)
+            if (error.message) {
+                yield put({
+                    type: ERROR,
+                    payload: error.message
+                })
+            } else {
+                history.go(-1)
+            }
+        }
+    } else {
         yield put({
             type: ERROR,
-            payload: error
+            payload: 'Displayname missing'
         })
-    } else {
-        history.go(-1)
     }
 }
 

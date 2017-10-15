@@ -20,7 +20,7 @@ class Header extends Component {
         }
         return (
                 <div className="nav-right nav-menu">
-                    <Login />
+                    <Login error={this.props.error} />
                     <div className="nav-item">
                     <Link className="button is-primary" to='/signup' >Signup</Link>
                     </div>

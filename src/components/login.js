@@ -23,6 +23,16 @@ class Login extends Component {
         this.setState({ modal: !this.state.modal })
     }
 
+    showError = () => {
+        if (this.props.error) {
+            return (
+                <span className="tag is-danger is-small">
+                    <p className="is-size-6">{this.props.error}</p>
+                </span>
+            )
+        }
+    }
+
     render() {
         return (
             <div className="nav-item">
@@ -35,6 +45,7 @@ class Login extends Component {
                             <button onClick={this.toggleModal} className="delete" ariaLabel="close"></button>
                         </header>
                         <section className="modal-card-body">
+                            { this.showError() }
                             <form onSubmit={this.loginUser} >
                                 <div className="field">
                                     <label className="label">E-mail</label>

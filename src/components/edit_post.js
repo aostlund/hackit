@@ -46,16 +46,17 @@ class NewPost extends Component {
     }
 
     render() {
-        if (this.props.post.content) {
-            if (this.props.user.uid === this.props.post.user) {
+        if (this.props.post.posts && this.props.post.posts.length === 1) {
+            let post = this.props.post.posts[0]
+            if (this.props.user.uid === post.user) {
                 return (
                     <div>
                         <p>Title</p>
-                        <input type="text" onChange={this.updateTitle.bind(this)} value={this.props.content.title || this.props.post.title} />
+                        <input type="text" onChange={this.updateTitle.bind(this)} value={this.props.content.title || post.title} />
                         <p>Link</p>
-                        <input type="text" ref="link" onChange={this.updateLink.bind(this)} value={this.props.content.link || this.props.post.link} />
+                        <input type="text" ref="link" onChange={this.updateLink.bind(this)} value={this.props.content.link || post.link} />
                         <Editor
-                            initialContentState={this.props.post.content}
+                            initialContentState={post.content}
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
@@ -69,6 +70,8 @@ class NewPost extends Component {
                 this.props.sendError('You can not edit another users post')
                 this.props.history.go(-1)
             }
+        } else {
+            return <div/>
         }
     }
 }
@@ -77,7 +80,7 @@ function mapStateToProps(state) {
     return {
         content: state.editorContent,
         user: state.user,
-        post: state.posts[0] || {}
+        post: state.posts
     }
 }
 
