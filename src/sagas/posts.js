@@ -9,17 +9,38 @@ import {
     SAVE_EDITED_POST,
     GET_POST,
     FETCH_POST,
+    NUM_POSTS,
+    GET_NUM_POSTS
 } from '../actions/types'
 import firebase from 'firebase'
 
-export function* delayedGet() {
-    let data = yield firebase.database().ref('posts').once('value').then(snapshot => snapshot.val())   
+export function* delayedGet({payload: {start, perPage, score}}) {
+    // let data = yield firebase.database().ref('posts').once('value').then(snapshot => snapshot.val())   
+    // data = _.map(data, (val, id) =>  { return { id: id, ...val } })
+    // yield put({ type: GET_POSTS, payload: data })
+    console.log(start, perPage)
+    let data = yield firebase.database().ref('posts').orderByChild('score').endAt(score, start).limitToLast(perPage).once('value').then(snapshot => snapshot.val())
+    let a = yield firebase.database().ref('posts').orderByChild('score').endAt(99, '-').once('value').then(snapshot => snapshot.forEach(a => console.log(a.val())))
+    console.log(a)
     data = _.map(data, (val, id) =>  { return { id: id, ...val } })
+    data = data.sort((a,b) => a.id > b.id ? 1 : -1)
     yield put({ type: GET_POSTS, payload: data })
 }
 
 export function* watchDelayedGet() {
     yield takeEvery(DELAYED_GET_POSTS, delayedGet)
+}
+
+export function* numPosts() {
+    let data = yield fetch('https://webapp2-8a6f8.firebaseio.com/posts.json?shallow=true').then(res => res.json()).then(res => res)
+    yield put({
+        type: NUM_POSTS,
+        payload: Object.keys(data).length
+    })
+}
+
+export function* watchNumPosts() {
+    yield takeEvery(GET_NUM_POSTS, numPosts)
 }
 
 export function* changePostScore(update) {

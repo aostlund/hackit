@@ -18,35 +18,14 @@ import {
     LOGIN_USER,
     LOGOUT_USER,
     SIGNUP_USER,
-    ERROR
+    ERROR,
+    GET_NUM_POSTS
 } from './types'
 
-export function getPosts() {
+export function getPosts(payload) {
     return {
         type: DELAYED_GET_POSTS,
-        payload: [
-            {
-                title: 'Test',
-                link: 'http://test.link',
-                id: 0,
-                score: 5,
-                info: 'Test text'
-            },
-            {
-                title: 'Second Test',
-                link: 'http://test2.link',
-                id: 1,
-                score: 10,
-                info: 'video'
-            },
-            {
-                title: 'Third Test',
-                link: 'http://test3.link',
-                id: 3,
-                score: -3,
-                info: 'useless'
-            }
-        ]
+        payload: payload
     }
 }
 export function getPost(id) {
@@ -141,5 +120,12 @@ export function sendError(payload) {
     return {
         type: ERROR,
         payload,
+    }
+}
+
+export function numPosts() {
+    console.log('actions numPosts')
+    return {
+        type: GET_NUM_POSTS
     }
 }

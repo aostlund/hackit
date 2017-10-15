@@ -18,9 +18,9 @@ class Comments extends Component {
         this.props.getComments({ id: this.props.match.params.id })
     }
 
-    html() {
-        if (this.props.post.content != {}) {
-            return draftToHtml(this.props.post.content)
+    html(post) {
+        if (post.content != {}) {
+            return draftToHtml(post.content)
         }
     }
 
@@ -86,45 +86,54 @@ class Comments extends Component {
     }
 
     render() {
-        return (
-            <div className="box">
-                <article className="media">
-                    <figure className="media-left">
-                        <p className="image is-64x64">
-                            <img src="https://placekitten.com/g/64/64" />
-                        </p>
-                    </figure>
-                    <div className="media-content">
-                        <a className="title is-3" href={this.props.post.link}>
-                            {this.props.post.title}
-                        </a>
-                        <p><small>submitted by </small><strong>{this.props.post.userName}</strong></p>
-                        <div dangerouslySetInnerHTML={{__html: this.html()}} />
-                        <div className="level">
-                            <span>
-                                <Link to={{
-                                        pathname: '/newcomment',
-                                        state: {
-                                            post: this.props.post.id,
-                                            parent: 0
-                                        }
-                                    }} >Reply</Link>  
-                                <span> </span>
-                                {this.canEdit(this.props.post, 'editpost')}
-                            </span>
-                            <Vote {...this.props.post} changeScore={this.props.changePostScore} />
-                        </div>
-                        {this.listComments()}
+        if (this.props.post.posts) {
+            if (this.props.post.posts.length === 1) {
+                let post = this.props.post.posts[0]
+                return (
+                    <div className="box">
+                        <article className="media">
+                            <figure className="media-left">
+                                <p className="image is-64x64">
+                                    <img src="https://placekitten.com/g/64/64" />
+                                </p>
+                            </figure>
+                            <div className="media-content">
+                                <a className="title is-3" href={post.link}>
+                                    {post.title}
+                                </a>
+                                <p><small>submitted by </small><strong>{this.props.post.userName}</strong></p>
+                                <div dangerouslySetInnerHTML={{__html: this.html(post)}} />
+                                <div className="level">
+                                    <span>
+                                        <Link to={{
+                                                pathname: '/newcomment',
+                                                state: {
+                                                    post: post.id,
+                                                    parent: 0
+                                                }
+                                            }} >Reply</Link>  
+                                        <span> </span>
+                                        {this.canEdit(post, 'editpost')}
+                                    </span>
+                                    <Vote {...post} changeScore={this.props.changePostScore} />
+                                </div>
+                                {this.listComments()}
+                            </div>
+                        </article>
                     </div>
-                </article>
-            </div>
-        )
+                )
+            } else {
+                return <div/>
+            }
+        } else {
+            return <div/>
+        }
     }
 }
 
 function mapStateToProps(state) {
     return {
-        post: state.posts[0] || {},
+        post: state.posts,
         comments: state.comments,
         user: state.user
     }

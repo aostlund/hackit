@@ -14,6 +14,7 @@ export default function* rootSaga() {
         Posts.watchSavePost(),
         Posts.watchSaveEditedPost(),
         Posts.watchFetchPost(),
+        Posts.watchNumPosts(),
         Comments.watchChangeCommentScore(),
         Comments.watchSaveComment(),
         Comments.watchSaveEditedComment(),
