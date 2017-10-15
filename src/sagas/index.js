@@ -4,6 +4,7 @@ import * as Posts from './posts'
 import * as Comments from './comments'
 import * as Auth from './auth'
 import * as error from './error'
+import * as users from './users'
 
 
 
@@ -24,6 +25,9 @@ export default function* rootSaga() {
         Auth.watchLoginUser(),
         Auth.watchLogoutUser(),
         Auth.watchSignupUser(),
-        error.watchClearError()
+        error.watchClearError(),
+        users.watchFetchAllUsers(),
+        users.watchToggleAdmin(),
+        users.watchDeleteUser()
     ])
 }

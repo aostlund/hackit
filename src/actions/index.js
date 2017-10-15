@@ -21,7 +21,10 @@ import {
     ERROR,
     GET_NUM_POSTS,
     CANCEL_POST_CHANNEL,
-    CANCEL_COMMENTS_CHANNEL
+    CANCEL_COMMENTS_CHANNEL,
+    FETCH_ALL_USERS,
+    TOGGLE_ADMIN,
+    DELETE_USER
 } from './types'
 
 export function getPosts(payload) {
@@ -140,5 +143,25 @@ export function cancelPostChannel() {
 export function cancelCommentsChannel() {
     return {
         type: CANCEL_COMMENTS_CHANNEL
+    }
+}
+
+export function getAllUsers() {
+    return {
+        type: FETCH_ALL_USERS
+    }
+}
+
+export function toggleAdmin(payload) {
+    return {
+        type: TOGGLE_ADMIN,
+        payload,
+    }
+}
+
+export function deleteUser(payload) {
+    return {
+        type: DELETE_USER,
+        payload,
     }
 }

@@ -4,6 +4,7 @@ import comments from './comments'
 import editorContent from './editor'
 import user from './user'
 import error from './error'
+import users from './users'
 
 const rootReducer = combineReducers({
   posts,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   editorContent,
   user,
   error,
+  users,
 });
 
 export default rootReducer;

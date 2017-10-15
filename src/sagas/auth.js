@@ -27,7 +27,11 @@ export function* watchTrackUserStatus() {
                         }
                     })
                 }
-                emit({ uid: user.uid, user: firebase.database().ref(`users/${user.uid}`).once('value') })
+                if (user) {
+                    emit({ uid: user.uid, user: firebase.database().ref(`users/${user.uid}`).once('value') })
+                } else {
+                    emit ({ user })
+                }
             }
         )
         return unsubscribe;
@@ -42,7 +46,7 @@ export function* watchTrackUserStatus() {
 export function* trackUserStatus({ uid, user }) {
     yield put({
         type: CHANGE_USER_STATE,
-        payload: { uid, ...yield user.then(snapshot => snapshot.val()) }
+        payload: user ? { uid, ...yield user.then(snapshot => snapshot.val()) } : user
     })
 }
 

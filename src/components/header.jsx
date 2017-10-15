@@ -40,7 +40,6 @@ class Header extends Component {
     }
 
     isAdmin = () => {
-        console.log('user', this.props.user)
         if (this.props.user && this.props.user.admin) {
             return (
                 <Link className="nav-item" to="/admin" >Admin</Link>
