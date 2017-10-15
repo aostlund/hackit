@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Post from './post'
-import { getPosts, changePostScore, numPosts } from '../actions'
+import { getPosts, changePostScore, numPosts, cancelPostChannel } from '../actions'
 
 class PostList extends Component {
     state = {
@@ -28,6 +28,7 @@ class PostList extends Component {
     })
 
     getPrev = () => {
+        this.props.cancelPostChannel()
         this.props.getPosts({start: this.state.prevStart.slice(-1)[0], score: this.state.prevScore.slice(-1)[0], perPage: this.state.perPage })
         this.setState({
             prevStart: this.state.prevStart.slice(0, -1),
@@ -38,6 +39,7 @@ class PostList extends Component {
     }
 
     getNext = () => {
+        this.props.cancelPostChannel()
         let x = this.props.posts.posts.sort((a,b) => a.score < b.score ? 1 : -1)
         for (let i = 0; i <= x.length; i++) {
             if (x[i].score === x[x.length-1].score) {
@@ -83,6 +85,7 @@ class PostList extends Component {
 function mapStateToProps(state) {
     return {
         posts: state.posts,
+        user: state.user
     }
 }
 
@@ -90,6 +93,7 @@ const mapDispatchToProps = {
     getPosts,
     changeScore: changePostScore,
     numPosts,
+    cancelPostChannel,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostList)

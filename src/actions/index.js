@@ -19,7 +19,8 @@ import {
     LOGOUT_USER,
     SIGNUP_USER,
     ERROR,
-    GET_NUM_POSTS
+    GET_NUM_POSTS,
+    CANCEL_POST_CHANNEL
 } from './types'
 
 export function getPosts(payload) {
@@ -126,5 +127,11 @@ export function sendError(payload) {
 export function numPosts() {
     return {
         type: GET_NUM_POSTS
+    }
+}
+
+export function cancelPostChannel() {
+    return {
+        type: CANCEL_POST_CHANNEL
     }
 }

@@ -1,6 +1,7 @@
 import "regenerator-runtime/runtime" 
 import _ from 'lodash'
-import { put, takeEvery } from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
+import { put, takeEvery, cancelled, take, takeLatest, call } from 'redux-saga/effects'
 import { 
     GET_POSTS,
     DELAYED_GET_POSTS,
@@ -11,30 +12,66 @@ import {
     FETCH_POST,
     NUM_POSTS,
     GET_NUM_POSTS,
-    ERROR
+    ERROR,
+    CANCEL_POST_CHANNEL
 } from '../actions/types'
 import firebase from 'firebase'
 
-export function* delayedGet({payload: {start, perPage, score}}) {
-    let error = {}
-    let data = yield firebase.database().ref('posts')
-        .orderByChild('score').endAt(score, start).limitToLast(perPage).once('value')
-        .then(snapshot => snapshot.val())
-        .catch(e => error = e)
-    data = _.map(data, (val, id) =>  { return { id: id, ...val } })
-    data = data.sort((a,b) => a.id > b.id ? 1 : -1)
-    if (error.message) {
-        put({
-            type: ERROR,
-            payload: error.message
-        })
-    } else {
-        yield put({ type: GET_POSTS, payload: data })
-    }
+export function delayedGet({payload: {start, perPage, score}}) {
+    const ref = firebase.database().ref('posts')
+    return eventChannel(emit => {
+        const cb = ref.orderByChild('score').endAt(score, start).limitToLast(perPage).on('value',
+            snapshot => {
+                let data = snapshot.val()
+                data = _.map(data, (val, id) => { return { id: id, ...val } } )
+                data = data.sort((a,b) => a.id > b.id ? 1 : -1)
+                emit (data)
+            }
+        )
+        return () => ref.off('value', cb);
+    })
+    // try {
+    //     yield takeLatest(postChannel, getPosts);
+    //     console.log('try', postChannel)
+    // } finally {
+    //     console.log('finally', postChannel)
+    //     if (yield cancelled()) postChannel.close();
+    // }
+    // let error = {}
+    // let data = yield firebase.database().ref('posts')
+    //     .orderByChild('score').endAt(score, start).limitToLast(perPage).once('value')
+    //     .then(snapshot => snapshot.val())
+    //     .catch(e => error = e)
+    // data = _.map(data, (val, id) =>  { return { id: id, ...val } })
+    // data = data.sort((a,b) => a.id > b.id ? 1 : -1)
+    // if (error.message) {
+    //     put({
+    //         type: ERROR,
+    //         payload: error.message
+    //     })
+    // } else {
+    //     yield put({ type: GET_POSTS, payload: data })
+    // }
+}
+
+export function* getPosts(payload) {
+    yield put({
+        type: GET_POSTS,
+        payload: payload
+    })
+}
+
+export function* watchPostChannel(payload) {
+    let channel = yield call(delayedGet, payload)
+
+    yield takeEvery(channel, getPosts)
+
+    yield take(CANCEL_POST_CHANNEL)
+    channel.close()
 }
 
 export function* watchDelayedGet() {
-    yield takeEvery(DELAYED_GET_POSTS, delayedGet)
+    yield takeLatest(DELAYED_GET_POSTS, watchPostChannel)
 }
 
 export function* numPosts() {
@@ -62,34 +99,38 @@ export function* watchNumPosts() {
 
 export function* changePostScore(update) {
     let error = {}
-    let currentUser = yield firebase.auth().currentUser.uid
-    let user = yield firebase.database().ref(`users/${currentUser}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-    if (user[update.payload.id]) {
-        if (user[update.payload.id] + update.payload.change > 1 || user[update.payload.id] + update.payload.change < -1) {
-            yield put({
-                type: ERROR,
-                payload: 'You cannot vote more than one point'
-            })
-            yield put({
-                type: DELAYED_GET_POSTS
-            })
+    let currentUser = yield firebase.auth().currentUser
+    if (!currentUser) {
+        yield put({
+            type: ERROR,
+            payload: 'You must be logged in to vote'
+        })
+    } else {
+        let user = yield firebase.database().ref(`users/${currentUser.uid}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+        if (user[update.payload.id]) {
+            if (user[update.payload.id] + update.payload.change > 1 || user[update.payload.id] + update.payload.change < -1) {
+                yield put({
+                    type: ERROR,
+                    payload: 'You cannot vote more than one point'
+                })
+            } else {
+                let score = yield firebase.database().ref(`posts/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+                score = score.score + update.payload.change
+                yield firebase.database().ref(`posts/${update.payload.id}`).update({score: score}).catch(e => error = e)
+                yield firebase.database().ref(`users/${currentUser.uid}`).update({ [update.payload.id]: user[update.payload.id] + update.payload.change}).catch(e => error = e)
+            }
         } else {
             let score = yield firebase.database().ref(`posts/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
             score = score.score + update.payload.change
             yield firebase.database().ref(`posts/${update.payload.id}`).update({score: score}).catch(e => error = e)
-            yield firebase.database().ref(`users/${currentUser}`).update({ [update.payload.id]: user[update.payload.id] + update.payload.change}).catch(e => error = e)
+            yield firebase.database().ref(`users/${currentUser.uid}`).update({ [update.payload.id]: update.payload.change}).catch(e => error = e)
         }
-    } else {
-        let score = yield firebase.database().ref(`posts/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-        score = score.score + update.payload.change
-        yield firebase.database().ref(`posts/${update.payload.id}`).update({score: score}).catch(e => error = e)
-        yield firebase.database().ref(`users/${currentUser}`).update({ [update.payload.id]: update.payload.change}).catch(e => error = e)
-    }
-    if (error.message) {
-        yield put({
-            type: ERROR,
-            payload: error.message
-        })
+        if (error.message) {
+            yield put({
+                type: ERROR,
+                payload: error.message
+            })
+        }
     }
 }
 

@@ -24,10 +24,10 @@ class Vote extends Component {
             <p>
                 Points: <strong>{this.props.score}</strong> 
                 <span className="icon has-text-primary">
-                    <i className="fa fa-thumbs-up" onClick={() => this.increaseScore() }></i>
+                    <i className="fa fa-thumbs-up" onClick={ () => this.props.changeScore({ id: this.props.id, change: 1}) }></i>
                 </span>
                 <span className="icon has-text-danger">
-                    <i className="fa fa-thumbs-down" onClick={this.decreaseScore.bind(this)}></i>
+                    <i className="fa fa-thumbs-down" onClick={ () => this.props.changeScore({ id: this.props.id, change: -1}) }></i>
                 </span>
             </p>
         )
