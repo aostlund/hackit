@@ -25,14 +25,16 @@ class Admin extends Component {
                         <tbody>
                         { this.props.users.map(user => {
                             const deletable = user.uid === this.props.user.uid ? <td></td> : <td><a onClick={() => this.deleteUser(user)}>delete</a></td>;
-                            return (
-                            <tr>
-                                <td>{ user.displayName }</td>
-                                <td>{ user.email }</td>
-                                <td><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
-                                {deletable}
-                            </tr>
-                            )
+                            if (!user.delete) {
+                                return (
+                                    <tr>
+                                        <td>{ user.displayName }</td>
+                                        <td>{ user.email }</td>
+                                        <td><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
+                                        {deletable}
+                                    </tr>
+                                )
+                            }
                         })}
                         </tbody>
                     </table>

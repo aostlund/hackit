@@ -50,7 +50,7 @@ export function* watchToggleAdmin() {
 }
 
 export function* deleteUser({ payload }) {
-    yield firebase.database().ref(`users/${payload.uid}`).remove()
+    yield firebase.database().ref(`users/${payload.uid}`).update({ delete: true })
 }
 
 export function* watchDeleteUser() {

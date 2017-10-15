@@ -22,8 +22,12 @@ export function* watchTrackUserStatus() {
                             userReference.set({
                                 email: user.email,
                                 displayName: user.displayName,
-                                admin: false
+                                admin: false,
+                                delete: false 
                             })
+                        } else if (snapshot.val().delete) {
+                            user.delete()
+                            userReference.remove()
                         }
                     })
                 }
@@ -78,17 +82,11 @@ export function* signupUser({ payload: {displayname, email, password, history } 
                 payload: error.message
             })
         } else {
-            error = yield firebase.auth().currentUser.updateProfile({
+            yield firebase.auth().currentUser.updateProfile({
                 displayName: displayname
-            }).catch(error => error)
-            if (error.message) {
-                yield put({
-                    type: ERROR,
-                    payload: error.message
-                })
-            } else {
-                history.go(-1)
-            }
+            })
+            yield firebase.database().ref(`users/${yield firebase.auth().currentUser.uid}`).update({displayName: displayname})
+            history.go(-1)
         }
     } else {
         yield put({
