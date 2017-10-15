@@ -10,6 +10,7 @@ class Header extends Component {
         if (this.props.user) {
             return (
                 <div className="nav-right nav-menu">
+                    { this.isAdmin() }
                     <Link className="nav-item" to="/newpost" >Post</Link>
                     <div className="nav-item">
                         <h6 className="is-6">{this.props.user.displayName}</h6>
@@ -34,6 +35,15 @@ class Header extends Component {
                 <span className="tag is-danger is-small">
                     <p className="is-size-6">{this.props.error}</p>
                 </span>
+            )
+        }
+    }
+
+    isAdmin = () => {
+        console.log('user', this.props.user)
+        if (this.props.user && this.props.user.admin) {
+            return (
+                <Link className="nav-item" to="/admin" >Admin</Link>
             )
         }
     }

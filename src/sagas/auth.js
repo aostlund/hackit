@@ -21,12 +21,13 @@ export function* watchTrackUserStatus() {
                         if (!snapshot.val()) {
                             userReference.set({
                                 email: user.email,
-                                displayname: user.displayName
+                                displayName: user.displayName,
+                                admin: false
                             })
                         }
                     })
                 }
-                emit({ user })
+                emit({ uid: user.uid, user: firebase.database().ref(`users/${user.uid}`).once('value') })
             }
         )
         return unsubscribe;
@@ -38,10 +39,10 @@ export function* watchTrackUserStatus() {
     }
 }
 
-export function* trackUserStatus({ user }) {
+export function* trackUserStatus({ uid, user }) {
     yield put({
         type: CHANGE_USER_STATE,
-        payload: user
+        payload: { uid, ...yield user.then(snapshot => snapshot.val()) }
     })
 }
 

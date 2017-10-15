@@ -26,7 +26,7 @@ class Comments extends Component {
     }
 
     canEdit = (target, path) => {
-        if (this.props.user && this.props.user.uid === target.user) {
+        if (this.props.user && (this.props.user.uid === target.user || this.props.user.admin)) {
             return(
                 <Link to={`/${path}/${target.id}`} >Edit</Link>
             )
