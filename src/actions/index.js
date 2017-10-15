@@ -20,7 +20,8 @@ import {
     SIGNUP_USER,
     ERROR,
     GET_NUM_POSTS,
-    CANCEL_POST_CHANNEL
+    CANCEL_POST_CHANNEL,
+    CANCEL_COMMENTS_CHANNEL
 } from './types'
 
 export function getPosts(payload) {
@@ -133,5 +134,11 @@ export function numPosts() {
 export function cancelPostChannel() {
     return {
         type: CANCEL_POST_CHANNEL
+    }
+}
+
+export function cancelCommentsChannel() {
+    return {
+        type: CANCEL_COMMENTS_CHANNEL
     }
 }

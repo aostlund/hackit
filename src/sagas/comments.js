@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime" 
 import _ from 'lodash'
 import { delay, eventChannel } from 'redux-saga'
-import { put, takeEvery } from 'redux-saga/effects'
+import { put, takeEvery, takeLatest, call, take } from 'redux-saga/effects'
 import { 
     CHANGE_COMMENT_SCORE,
     SAVE_COMMENT,
@@ -10,41 +10,45 @@ import {
     GET_COMMENTS,
     FETCH_COMMENT,
     GET_COMMENT,
-    ERROR
+    ERROR,
+    CANCEL_COMMENTS_CHANNEL
 } from '../actions/types'
 import firebase from 'firebase'
 
 export function* changeCommentScore(update) {
     let error = {}
-    let currentUser = yield firebase.auth().currentUser.uid
-    let user = yield firebase.database().ref(`users/${currentUser}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-    if (user[update.payload.id]) {
-        if ((user[update.payload.id] + update.payload.change) > 1 || (user[update.payload.id] + update.payload.change) < -1) {
-            yield put({
-                type: ERROR,
-                payload: 'You cannot vote more than one point'
-            })
-            let comment = yield firebase.database().ref(`comments/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-            yield put({
-                type: FETCH_COMMENTS,
-                payload: {id: comment.post }
-            })
+    let currentUser = yield firebase.auth().currentUser
+    if(currentUser) {
+        let user = yield firebase.database().ref(`users/${currentUser.uid}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+        if (user[update.payload.id]) {
+            if ((user[update.payload.id] + update.payload.change) > 1 || (user[update.payload.id] + update.payload.change) < -1) {
+                yield put({
+                    type: ERROR,
+                    payload: 'You cannot vote more than one point'
+                })
+                let comment = yield firebase.database().ref(`comments/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+            } else {
+                let score = yield firebase.database().ref(`comments/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+                score = score.score + update.payload.change
+                yield firebase.database().ref(`comments/${update.payload.id}`).update({score: score}).catch(e => error = e)
+                yield firebase.database().ref(`users/${currentUser.uid}`).update({ [update.payload.id]: user[update.payload.id] + update.payload.change}).catch(e => error = e)
+            }
         } else {
             let score = yield firebase.database().ref(`comments/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
             score = score.score + update.payload.change
             yield firebase.database().ref(`comments/${update.payload.id}`).update({score: score}).catch(e => error = e)
-            yield firebase.database().ref(`users/${currentUser}`).update({ [update.payload.id]: user[update.payload.id] + update.payload.change}).catch(e => error = e)
+            yield firebase.database().ref(`users/${currentUser.uid}`).update({ [update.payload.id]: update.payload.change}).catch(e => error = e)
+        }
+        if (error.message) {
+            yield put({
+                type: ERROR,
+                payload: error.message
+            })
         }
     } else {
-        let score = yield firebase.database().ref(`comments/${update.payload.id}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-        score = score.score + update.payload.change
-        yield firebase.database().ref(`comments/${update.payload.id}`).update({score: score}).catch(e => error = e)
-        yield firebase.database().ref(`users/${currentUser}`).update({ [update.payload.id]: update.payload.change}).catch(e => error = e)
-    }
-    if (error.message) {
         yield put({
             type: ERROR,
-            payload: error.message
+            payload: 'You must be logged in to vote'
         })
     }
 }
@@ -97,26 +101,59 @@ export function* watchSaveEditedComment() {
     yield takeEvery(SAVE_EDITED_COMMENT, saveEditedComment)
 }
 
-export function* getComments({ payload }) {
-    let error = {}
-    let data = yield firebase.database().ref('comments').orderByChild('post').equalTo(payload.id).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-    if (error.message) {
-        yield put({
-            type: ERROR,
-            payload: error.message
-        })
-    } else {
-        yield put({
-            type: GET_COMMENTS,
-            payload: _.map(data, (val, id) => { return { id: id, ...val} })
-        })
-    }
+// export function* getComments({ payload }) {
+//     let error = {}
+//     let data = yield firebase.database().ref('comments').orderByChild('post').equalTo(payload.id).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+//     if (error.message) {
+//         yield put({
+//             type: ERROR,
+//             payload: error.message
+//         })
+//     } else {
+//         yield put({
+//             type: GET_COMMENTS,
+//             payload: _.map(data, (val, id) => { return { id: id, ...val} })
+//         })
+//     }
+// }
+
+// export function* watchGetComments() {
+//     yield takeEvery(FETCH_COMMENTS, getComments)
+// }
+
+export function getComments({ payload }) {
+    const ref = firebase.database().ref('comments')
+    return eventChannel(emit => {
+        const cb = ref.orderByChild('post').equalTo(payload.id).on('value',
+            snapshot => {
+                let data = snapshot.val()
+                data = _.map(data, (val, id) => { return { id: id, ...val } } )
+                emit (data)
+            }
+        )
+        return () => ref.off('value', cb);
+    })
+}
+
+export function* putComments(payload) {
+    yield put({
+        type: GET_COMMENTS,
+        payload: payload
+    })
+}
+
+export function* watchCommentsChannel(payload) {
+    let channel = yield call(getComments, payload)
+
+    yield takeEvery(channel, putComments)
+
+    yield take(CANCEL_COMMENTS_CHANNEL)
+    channel.close()
 }
 
 export function* watchGetComments() {
-    yield takeEvery(FETCH_COMMENTS, getComments)
+    yield takeLatest(FETCH_COMMENTS, watchCommentsChannel)
 }
-
 export function* getComment({ payload }) {
     let error = {}
     let comment = yield firebase.database().ref(`comments/${payload}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)

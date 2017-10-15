@@ -30,28 +30,6 @@ export function delayedGet({payload: {start, perPage, score}}) {
         )
         return () => ref.off('value', cb);
     })
-    // try {
-    //     yield takeLatest(postChannel, getPosts);
-    //     console.log('try', postChannel)
-    // } finally {
-    //     console.log('finally', postChannel)
-    //     if (yield cancelled()) postChannel.close();
-    // }
-    // let error = {}
-    // let data = yield firebase.database().ref('posts')
-    //     .orderByChild('score').endAt(score, start).limitToLast(perPage).once('value')
-    //     .then(snapshot => snapshot.val())
-    //     .catch(e => error = e)
-    // data = _.map(data, (val, id) =>  { return { id: id, ...val } })
-    // data = data.sort((a,b) => a.id > b.id ? 1 : -1)
-    // if (error.message) {
-    //     put({
-    //         type: ERROR,
-    //         payload: error.message
-    //     })
-    // } else {
-    //     yield put({ type: GET_POSTS, payload: data })
-    // }
 }
 
 export function* getPosts(payload) {
