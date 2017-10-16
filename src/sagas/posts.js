@@ -14,7 +14,8 @@ import {
     GET_NUM_POSTS,
     ERROR,
     CANCEL_POST_CHANNEL,
-    DELETE_POST
+    DELETE_POST,
+    CLEAR_EDITOR_CONTENT
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -137,6 +138,9 @@ export function* savePost({ payload: { content, history }}) {
             payload: error.message
         })
     } else {
+        yield put({
+            type: CLEAR_EDITOR_CONTENT
+        })
         history.push('/')
     }
 }
@@ -155,6 +159,9 @@ export function* saveEditedPost({ payload: { content, history, id}}) {
             payload: error.message
         })
     } else {
+        yield put({
+            type: CLEAR_EDITOR_CONTENT
+        })
         history.go(-1)
     }
 }

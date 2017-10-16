@@ -12,7 +12,8 @@ import {
     GET_COMMENT,
     ERROR,
     CANCEL_COMMENTS_CHANNEL,
-    DELETE_COMMENT
+    DELETE_COMMENT,
+    CLEAR_EDITOR_CONTENT
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -78,6 +79,9 @@ export function* saveComment({ payload: { content, history }}) {
             payload: error.message
         })
     } else {
+        yield put({
+            type: CLEAR_EDITOR_CONTENT
+        })
         history.push(`/comments/${content.post}`)
     }
 }
@@ -94,6 +98,9 @@ export function* saveEditedComment({ payload: { content, history, id}}) {
             payload: error.message
         })
     } else {
+        yield put({
+            type: CLEAR_EDITOR_CONTENT
+        })
         history.go(-1)
     }
 }
