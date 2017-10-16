@@ -31,7 +31,7 @@ class NewComment extends Component {
 
     render() {
         return (
-            <div>
+            <article className="box">
                 <Editor
                     initialContentState={this.props.content.content}
                     toolbarClassName="toolbarClassName"
@@ -39,9 +39,8 @@ class NewComment extends Component {
                     editorClassName="editorClassName"
                     onContentStateChange={this.updateText.bind(this)}
                 />
-                <button onClick={this.saveComment.bind(this)}>Comment</button>
-                <div dangerouslySetInnerHTML={{__html: this.html()}} />
-            </div>
+                <button className="button is-primary" onClick={this.saveComment.bind(this)}>Comment</button>
+            </article>
         )
     }
 }

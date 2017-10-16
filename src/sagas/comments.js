@@ -73,7 +73,7 @@ export function* saveComment({ payload: { content, history }}) {
     yield firebase.database().ref(`posts/${content.post}`).update({
         "comments": (post.comments || 0) + 1
     }).catch(e => error = e)
-    if (error.message) {
+    if (error && error.message) {
         yield put({
             type: ERROR,
             payload: error.message
@@ -92,7 +92,7 @@ export function* watchSaveComment() {
 
 export function* saveEditedComment({ payload: { content, history, id}}) {
     let error = yield firebase.database().ref(`comments/${id}`).update({"content": JSON.stringify(content.content)}).catch(error => error)
-    if (error.message) {
+    if (error && error.message) {
         yield put({
             type: ERROR,
             payload: error.message

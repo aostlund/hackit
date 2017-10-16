@@ -17,7 +17,6 @@ class EditComment extends Component {
     }
 
     updateText(contentState) {
-        onsole.log(this.props)
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
@@ -56,11 +55,10 @@ class EditComment extends Component {
 
     render() {
         return (
-            <div>
+            <article className="box">
                 {this.showEditor()}
-                <button onClick={this.saveComment.bind(this)}>Comment</button>
-                <div dangerouslySetInnerHTML={{__html: this.html()}} />
-            </div>
+                <button className="button is-primary" onClick={this.saveComment.bind(this)}>Comment</button>
+            </article>
         )
     }
 }
