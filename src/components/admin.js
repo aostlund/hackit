@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getAllUsers, toggleAdmin, deleteUser } from '../actions'
+import { getAllUsers, toggleAdmin, deleteUser, sendError } from '../actions'
 
 class Admin extends Component {
 
@@ -41,6 +41,8 @@ class Admin extends Component {
                 </div>
             )
         } else {
+            this.props.history.push('/')
+            this.props.sendError('Only an admin can view the admin page')
             return <div/>
         }
     }
@@ -53,4 +55,11 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { getAllUsers, toggleAdmin, deleteUser })(Admin)
+const mapDispatchToProps = {
+    getAllUsers,
+    toggleAdmin,
+    deleteUser,
+    sendError
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Admin)
