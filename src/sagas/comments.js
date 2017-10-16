@@ -11,7 +11,8 @@ import {
     FETCH_COMMENT,
     GET_COMMENT,
     ERROR,
-    CANCEL_COMMENTS_CHANNEL
+    CANCEL_COMMENTS_CHANNEL,
+    DELETE_COMMENT
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -172,4 +173,18 @@ export function* getComment({ payload }) {
 
 export function* watchGetComment() {
     yield takeEvery(FETCH_COMMENT, getComment)
+}
+
+export function* deleteComment({ payload }) {
+    let error = yield firebase.database().ref(`comments/${payload.id}`).remove().catch(error => error)
+    if (error && error.messge) {
+        yield put({
+            type: ERROR,
+            payload: error.message
+        })
+    }
+}
+
+export function* watchDeleteComment() {
+    yield takeEvery(DELETE_COMMENT, deleteComment)
 }

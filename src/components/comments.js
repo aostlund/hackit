@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getComments, changeCommentScore, getChildComments, changePostScore, getPost, cancelCommentsChannel } from '../actions'
+import { getComments, changeCommentScore, getChildComments, changePostScore, getPost, cancelCommentsChannel, deletePost, deleteComment } from '../actions'
 import { Route, Link } from 'react-router-dom'
 import draftToHtml from 'draftjs-to-html'
 import Comment from './comment'
@@ -33,6 +33,16 @@ class Comments extends Component {
         }
     }
 
+    canDelete = (target, type) => {
+        if (this.props.user && this.props.user.admin) {
+            if (type === 'post') {
+                return <a onClick={() => this.props.deletePost({ ...target, history: this.props.history })}>Delete</a>
+            } else {
+                return <a onClick={() => this.props.deleteComment(target)}>Delete</a>
+            }
+        }
+    }
+
     listChildComments(id) {
         const list = this.props.comments.filter(a => a.parent === id)
         if (list.length > 0) {
@@ -52,6 +62,8 @@ class Comments extends Component {
                                 }} >Reply</Link>
                                 <span>  </span>
                                 {this.canEdit(comment, 'editcomment')}
+                                <span> </span>
+                                {this.canDelete(comment, 'comment')}
                                 {this.listChildComments(comment.id)}
                             </div>
                         </div>
@@ -79,6 +91,8 @@ class Comments extends Component {
                             }} >Reply</Link>
                             <span>  </span>
                             {this.canEdit(comment, 'editcomment')}
+                            <span> </span>
+                            {this.canDelete(comment, 'comment')}
                             {this.listChildComments(comment.id)}
                         </div>
                     </article>
@@ -115,6 +129,8 @@ class Comments extends Component {
                                             }} >Reply</Link>  
                                         <span> </span>
                                         {this.canEdit(post, 'editpost')}
+                                        <span> </span>
+                                        {this.canDelete(post, 'post')}
                                     </span>
                                     <Vote {...post} changeScore={this.props.changePostScore} />
                                 </div>
@@ -146,6 +162,8 @@ const mapDispatchToProps = {
     cancelCommentsChannel,
     changePostScore: changePostScore,
     changeScore: changeCommentScore,
+    deletePost,
+    deleteComment
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comments)

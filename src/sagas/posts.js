@@ -13,7 +13,8 @@ import {
     NUM_POSTS,
     GET_NUM_POSTS,
     ERROR,
-    CANCEL_POST_CHANNEL
+    CANCEL_POST_CHANNEL,
+    DELETE_POST
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -181,4 +182,20 @@ export function* fetchPost({ payload }) {
 
 export function* watchFetchPost() {
     yield takeEvery(FETCH_POST, fetchPost)
+}
+
+export function* deletePost({ payload }) {
+    let error = yield firebase.database().ref(`posts/${payload.id}`).remove().catch(error => error)
+    if (error && error.messge) {
+        yield put({
+            type: ERROR,
+            payload: error.message
+        })
+    } else {
+        payload.history.push('/')
+    }
+}
+
+export function* watchDeletePost() {
+    yield takeEvery(DELETE_POST, deletePost)
 }

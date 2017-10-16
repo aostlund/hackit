@@ -24,7 +24,9 @@ import {
     CANCEL_COMMENTS_CHANNEL,
     FETCH_ALL_USERS,
     TOGGLE_ADMIN,
-    DELETE_USER
+    DELETE_USER,
+    DELETE_POST,
+    DELETE_COMMENT
 } from './types'
 
 export function getPosts(payload) {
@@ -162,6 +164,20 @@ export function toggleAdmin(payload) {
 export function deleteUser(payload) {
     return {
         type: DELETE_USER,
+        payload,
+    }
+}
+
+export function deletePost(payload) {
+    return {
+        type: DELETE_POST,
+        payload,
+    }
+}
+
+export function deleteComment(payload) {
+    return {
+        type: DELETE_COMMENT,
         payload,
     }
 }
