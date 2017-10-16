@@ -41,7 +41,7 @@ export function* getPosts(payload) {
     })
 }
 
-export function* watchPostChannel(payload) {
+export function* watchPostsChannel(payload) {
     let channel = yield call(delayedGet, payload)
 
     yield takeEvery(channel, getPosts)
@@ -51,7 +51,7 @@ export function* watchPostChannel(payload) {
 }
 
 export function* watchDelayedGet() {
-    yield takeLatest(DELAYED_GET_POSTS, watchPostChannel)
+    yield takeLatest(DELAYED_GET_POSTS, watchPostsChannel)
 }
 
 export function* numPosts() {
@@ -171,24 +171,37 @@ export function* watchSaveEditedPost() {
 }
 
 export function* fetchPost({ payload }) {
-    let error = {}
-    let post = yield firebase.database().ref(`posts/${payload}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e) 
-    if (error.message) {
-        yield put({
-            type: ERROR,
-            payload: error.message
-        })
-    } else {
-        post.content = JSON.parse(post.content)
-        yield put({
-            type: GET_POST,
-            payload: [{id: payload, ...post}]
-        })
-    }
+    const ref = firebase.database().ref(`posts/${payload}`)
+    return eventChannel(emit => {
+        const cb = ref.on('value',
+            snapshot => {
+                let data = snapshot.val()
+                data.id = payload
+                emit ([data])
+            }
+        )
+        return () => ref.off('value', cb);
+    })
+}
+
+export function* putPost(payload) {
+    yield put({
+        type: GET_POST,
+        payload: payload
+    })
+}
+
+export function* watchPostChannel(payload) {
+    let channel = yield call(fetchPost, payload)
+
+    yield takeEvery(channel, putPost)
+
+    yield take(CANCEL_POST_CHANNEL)
+    channel.close()
 }
 
 export function* watchFetchPost() {
-    yield takeEvery(FETCH_POST, fetchPost)
+    yield takeEvery(FETCH_POST, watchPostChannel)
 }
 
 export function* deletePost({ payload }) {

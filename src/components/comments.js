@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getComments, changeCommentScore, getChildComments, changePostScore, getPost, cancelCommentsChannel, deletePost, deleteComment } from '../actions'
+import { getComments, changeCommentScore, getChildComments, changePostScore, getPost, cancelCommentsChannel, deletePost, deleteComment, cancelPostChannel } from '../actions'
 import { Route, Link } from 'react-router-dom'
 import draftToHtml from 'draftjs-to-html'
 import Comment from './comment'
@@ -8,6 +8,7 @@ import Vote from './vote'
 
 class Comments extends Component {
     componentWillMount() {
+        this.props.cancelPostChannel()
         this.props.getPost(this.props.match.params.id)
         if (this.props.comments.length != 0) {
             this.props.cancelCommentsChannel()
@@ -163,7 +164,8 @@ const mapDispatchToProps = {
     changePostScore: changePostScore,
     changeScore: changeCommentScore,
     deletePost,
-    deleteComment
+    deleteComment,
+    cancelPostChannel
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comments)

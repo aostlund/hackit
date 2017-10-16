@@ -14,6 +14,7 @@ class PostList extends Component {
     }
 
     componentWillMount() {
+        this.props.cancelPostChannel()
         this.props.getPosts({start: this.state.start, perPage: this.state.perPage, score: this.state.score })
         this.props.numPosts()
     }
