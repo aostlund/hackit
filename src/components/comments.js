@@ -117,7 +117,7 @@ class Comments extends Component {
                                 <a className="title is-3" href={post.link}>
                                     {post.title}
                                 </a>
-                                <p><small>submitted by </small><strong>{this.props.post.userName}</strong></p>
+                                <p><small>submitted by </small><strong>{post.userName}</strong></p>
                                 <div dangerouslySetInnerHTML={{__html: this.html(post)}} />
                                 <div className="level">
                                     <span>
