@@ -15,11 +15,11 @@ class Admin extends Component {
     render() {
         if (this.props.user && this.props.user.admin) {
             return (
-                <div>
-                    <table>
+                <article className="box">
+                    <table className="table is-striped is-bordered">
                         <thead>
                         <tr>
-                            <td>DisplayName</td><td>Email</td><td>Admin</td>
+                            <td>DisplayName</td><td>Email</td><td>Admin</td><td>Delete</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,7 +30,7 @@ class Admin extends Component {
                                     <tr>
                                         <td>{ user.displayName }</td>
                                         <td>{ user.email }</td>
-                                        <td><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
+                                        <td style={{textAlign: 'center'}}><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
                                         {deletable}
                                     </tr>
                                 )
@@ -38,7 +38,7 @@ class Admin extends Component {
                         })}
                         </tbody>
                     </table>
-                </div>
+                </article>
             )
         } else {
             this.props.history.push('/')
