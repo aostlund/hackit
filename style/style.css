@@ -1,3 +1,7 @@
 html {
     background: #eee !important;
 }
+.DraftEditor-root {
+    border: solid 1px #eee;
+    padding: 0 10px;
+}

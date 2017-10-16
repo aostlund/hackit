@@ -20,11 +20,11 @@ class NewPost extends Component {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
-    updateTitle(e) {
+    updateTitle = (e) => {
         this.props.updateEditorContent({...this.props.content, title: e.target.value })
     }
 
-    updateLink(e) {
+    updateLink = (e) => {
         this.props.updateEditorContent({...this.props.content, link: e.target.value })
     }
 
@@ -50,11 +50,19 @@ class NewPost extends Component {
             let post = this.props.post.posts[0]
             if (this.props.user.uid === post.user) {
                 return (
-                    <div>
-                        <p>Title</p>
-                        <input type="text" onChange={this.updateTitle.bind(this)} value={this.props.content.title || post.title} />
-                        <p>Link</p>
-                        <input type="text" ref="link" onChange={this.updateLink.bind(this)} value={this.props.content.link || post.link} />
+                    <article className="box">
+                        <div className="field">
+                            <label className="label">Title</label>
+                            <div className="control">
+                                <input className="input" type="text" name="title" onChange={this.updateTitle} value={this.props.content.title || post.title} />
+                            </div>
+                        </div>
+                        <div className="field">
+                            <label className="label">Link</label>
+                            <div className="control">
+                                <input className="input" type="text" name="link" onChange={this.updateLink} value={this.props.content.link || post.link} />
+                            </div>
+                        </div>
                         <Editor
                             initialContentState={post.content}
                             toolbarClassName="toolbarClassName"
@@ -62,9 +70,8 @@ class NewPost extends Component {
                             editorClassName="editorClassName"
                             onContentStateChange={this.updateText.bind(this)}
                         />
-                        <button onClick={this.savePost.bind(this)}>Post</button>
-                        <div dangerouslySetInnerHTML={{__html: this.html()}} />
-                    </div>
+                        <button className="button is-primary" onClick={this.savePost.bind(this)}>Post</button>
+                    </article>
                 )
             } else {
                 this.props.sendError('You can not edit another users post')

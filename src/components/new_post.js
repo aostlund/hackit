@@ -19,11 +19,11 @@ class NewPost extends Component {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
-    updateTitle(e) {
+    updateTitle = (e) => {
         this.props.updateEditorContent({...this.props.content, title: e.target.value })
     }
 
-    updateLink(e) {
+    updateLink = (e) => {
         this.props.updateEditorContent({...this.props.content, link: e.target.value })
     }
 
@@ -39,11 +39,19 @@ class NewPost extends Component {
 
     render() {
         return (
-            <div>
-                <p>Title</p>
-                <input type="text" onChange={this.updateTitle.bind(this)} value={this.props.content.title} />
-                <p>Link</p>
-                <input type="text" ref="link" onChange={this.updateLink.bind(this)} value={this.props.content.link} />
+            <article className="box">
+                <div className="field">
+                    <label className="label">Title</label>
+                    <div className="control">
+                        <input className="input" type="text" name="title" onChange={this.updateTitle} value={this.props.content.title} />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Link</label>
+                    <div className="control">
+                        <input className="input" type="text" name="link" onChange={this.updateLink} value={this.props.content.link} />
+                    </div>
+                </div>
                 <Editor
                     initialContentState={this.props.content.content}
                     toolbarClassName="toolbarClassName"
@@ -51,9 +59,8 @@ class NewPost extends Component {
                     editorClassName="editorClassName"
                     onContentStateChange={this.updateText.bind(this)}
                 />
-                <button onClick={this.savePost.bind(this)}>Post</button>
-                <div dangerouslySetInnerHTML={{__html: this.html()}} />
-            </div>
+                <button className="button is-primary" onClick={this.savePost.bind(this)}>Post</button>
+            </article>
         )
     }
 }

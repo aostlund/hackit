@@ -153,7 +153,7 @@ export function* saveEditedPost({ payload: { content, history, id}}) {
         content.content = JSON.stringify(content.content)
     }
     let error = yield firebase.database().ref(`posts/${id}`).update(content).catch(error => error)
-    if (error.message) {
+    if (error && error.message) {
         yield put({
             type: ERROR,
             payload: error.message
