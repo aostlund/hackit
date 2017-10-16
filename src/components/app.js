@@ -10,7 +10,6 @@ import EditPost from './edit_post'
 import NewComment from './new_comment'
 import EditComment from './edit_comment'
 import Login from './login'
-import Signup from './signup'
 import Admin from './admin'
 
 import 'bulma/css/bulma.css'
@@ -34,7 +33,6 @@ class App extends Component {
             <Route exact path="/newcomment" component={NewComment} />
             <Route exact path="/editcomment/:id" component={EditComment} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/signup" component={Signup} />
             <Route exact path="/admin" component={Admin} />
           </Switch>
         </div>

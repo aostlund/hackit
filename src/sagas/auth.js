@@ -86,7 +86,6 @@ export function* signupUser({ payload: {displayname, email, password, history } 
                 displayName: displayname
             })
             yield firebase.database().ref(`users/${yield firebase.auth().currentUser.uid}`).update({displayName: displayname})
-            history.go(-1)
         }
     } else {
         yield put({

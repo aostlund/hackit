@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { BrowserRoute as Router, Route, Link } from 'react-router-dom'
 import Login from './login'
 import Logout from './logout'
+import Signup from './signup'
 
 class Header extends Component {
 
@@ -23,7 +24,7 @@ class Header extends Component {
                 <div className="nav-right nav-menu">
                     <Login error={this.props.error} />
                     <div className="nav-item">
-                    <Link className="button is-primary" to='/signup' >Signup</Link>
+                    <Signup error={this.props.error} />
                     </div>
                 </div>
         )
