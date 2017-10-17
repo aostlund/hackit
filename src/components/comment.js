@@ -2,20 +2,18 @@ import React, { Component } from 'react'
 import draftToHtml from 'draftjs-to-html'
 import Vote from './vote'
 
-export default class Comment extends Component {
-    render() {
+export default (props) => {
         return(
-            <article key={this.props.id} >
+            <article key={props.id} >
                 <div className="level is-marginless">
                     <div className="level-left">
-                        <small>{this.props.userName}</small>
+                        <small>{props.userName}</small>
                     </div>
                     <div className="level-right">
-                        <Vote {...this.props} />
+                        <Vote {...props} />
                     </div>
                 </div>
-                <div className="container is-fluid" dangerouslySetInnerHTML={{__html: draftToHtml(JSON.parse(this.props.content)) }} />
+                <div className="container is-fluid" dangerouslySetInnerHTML={{__html: draftToHtml(JSON.parse(props.content)) }} />
             </article>
         )
-    }
 }
