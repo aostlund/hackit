@@ -79,7 +79,7 @@ class Comments extends Component {
         return list.sort((a,b) => a.score < b.score ? 1 : -1)
             .map(comment => {
                 return (
-                    <article className="media" style={{ borderLeft: 'solid lightgrey 1px'}}>
+                    <article className="media" style={{ border: 'solid lightgrey 1px'}}>
                         <div className="media-left" />
                         <div className="media-content">
                             <Comment {...comment} changeScore={this.props.changeScore} />
@@ -109,17 +109,14 @@ class Comments extends Component {
                     <div className="box">
                         <article className="media">
                             <figure className="media-left">
-                                <p className="image is-64x64">
-                                    <img src="https://placekitten.com/g/64/64" />
-                                </p>
                             </figure>
                             <div className="media-content">
                                 <a className="title is-3" href={post.link}>
                                     {post.title}
                                 </a>
                                 <p><small>submitted by </small><strong>{post.userName}</strong></p>
-                                <div dangerouslySetInnerHTML={{__html: this.html(post)}} />
-                                <div className="level">
+                                <div className="comment" dangerouslySetInnerHTML={{__html: this.html(post)}} />
+                                <div className="level is-mobile">
                                     <span>
                                         <Link to={{
                                                 pathname: '/newcomment',

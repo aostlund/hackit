@@ -8,9 +8,6 @@ export default (props) => {
     return (
             <article className="media">
                 <figure className="media-left">
-                    <p className="image is-64x64">
-                        <img src="https://placekitten.com/g/64/64" />
-                    </p>
                 </figure>
                 <div className="media-content">
                     <a className="title is-4 has-text-primary" href={props.link ? `http://${props.link}` : `/comments/${props.id}`}>

@@ -12,3 +12,8 @@ html {
     flex-wrap: wrap;
     height: auto !important;
 }
+.comment {
+    background: #fafafa;
+    padding: 0.5rem;
+    margin-right: 1rem !important;
+}
