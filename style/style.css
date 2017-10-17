@@ -5,3 +5,10 @@ html {
     border: solid 1px #eee;
     padding: 0 10px;
 }
+.nav-item {
+    padding: 0.5rem 0.25rem !important;
+}
+.nav {
+    flex-wrap: wrap;
+    height: auto !important;
+}

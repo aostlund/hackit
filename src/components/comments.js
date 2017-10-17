@@ -22,7 +22,7 @@ class Comments extends Component {
 
     html(post) {
         if (post.content != {}) {
-            return draftToHtml(post.content)
+            return draftToHtml(JSON.parse(post.content))
         }
     }
 

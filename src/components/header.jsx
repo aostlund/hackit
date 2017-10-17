@@ -10,7 +10,7 @@ class Header extends Component {
     loggedIn = () => {
         if (this.props.user) {
             return (
-                <div className="nav-right nav-menu">
+                <div className="nav-right">
                     { this.isAdmin() }
                     <Link className="nav-item" to="/newpost" >Post</Link>
                     <div className="nav-item">
@@ -21,7 +21,7 @@ class Header extends Component {
             )
         }
         return (
-                <div className="nav-right nav-menu">
+                <div className="nav-right">
                     <Login error={this.props.error} />
                     <div className="nav-item">
                     <Signup error={this.props.error} />
