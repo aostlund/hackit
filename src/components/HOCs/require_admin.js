@@ -3,18 +3,18 @@ import { connect } from 'react-redux'
 import { sendError } from '../../actions'
 
 export default function(ComposedComponent) {
-    class Authentication extends Component {
+    class AdminAuth extends Component {
         componentWillMount() {
-            if (!this.props.user) {
+            if (!this.props.user || !this.props.user.admin) {
                 this.props.history.go(-1)
-                this.props.sendError('You have to be logged in to author content')
+                this.props.sendError('You have to be admin to access admin-page')
             }
         }
 
         componentWillUpdate(nextProps) {
-            if (!nextProps.user) {
+            if (!nextProps.user || !this.props.user.admin) {
                 this.props.history.push('/')
-                this.props.sendError('You have to be logged in to author content')
+                this.props.sendError('You have to be admin to access admin-page')
             }
         }
 
@@ -29,5 +29,5 @@ export default function(ComposedComponent) {
         }
     }
 
-    return connect(mapStateToProps, { sendError, })(Authentication)
+    return connect(mapStateToProps, { sendError, })(AdminAuth)
 }

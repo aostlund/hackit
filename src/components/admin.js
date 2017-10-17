@@ -13,45 +13,38 @@ class Admin extends Component {
     toggleRole = user => this.props.toggleAdmin(user)
 
     render() {
-        if (this.props.user && this.props.user.admin) {
-            return (
-                <article className="box">
-                    <table className="table is-striped is-bordered">
-                        <thead>
-                        <tr>
-                            <td>DisplayName</td><td>Email</td><td>Admin</td><td>Delete</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        { this.props.users.map(user => {
-                            const deletable = user.uid === this.props.user.uid ? <td></td> : <td><a onClick={() => this.deleteUser(user)}>delete</a></td>;
-                            if (!user.delete) {
-                                return (
-                                    <tr>
-                                        <td>{ user.displayName }</td>
-                                        <td>{ user.email }</td>
-                                        <td style={{textAlign: 'center'}}><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
-                                        {deletable}
-                                    </tr>
-                                )
-                            }
-                        })}
-                        </tbody>
-                    </table>
-                </article>
-            )
-        } else {
-            this.props.history.push('/')
-            this.props.sendError('Only an admin can view the admin page')
-            return <div/>
-        }
+        return (
+            <article className="box">
+                <table className="table is-striped is-bordered">
+                    <thead>
+                    <tr>
+                        <td>DisplayName</td><td>Email</td><td>Admin</td><td>Delete</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    { this.props.users.map(user => {
+                        const deletable = user.uid === this.props.user.uid ? <td></td> : <td><a onClick={() => this.deleteUser(user)}>delete</a></td>;
+                        if (!user.delete) {
+                            return (
+                                <tr>
+                                    <td>{ user.displayName }</td>
+                                    <td>{ user.email }</td>
+                                    <td style={{textAlign: 'center'}}><input type="checkbox" readOnly={true} checked={user.admin} onClick={() => {this.toggleRole(user)}} /></td>
+                                    {deletable}
+                                </tr>
+                            )
+                        }
+                    })}
+                    </tbody>
+                </table>
+            </article>
+        )
     }
 }
 
 function mapStateToProps(state) {
     return {
         users: state.users,
-        user: state.user
     }
 }
 

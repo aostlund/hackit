@@ -9,10 +9,10 @@ import NewPost from './new_post'
 import EditPost from './edit_post'
 import NewComment from './new_comment'
 import EditComment from './edit_comment'
-import Login from './login'
 import Admin from './admin'
 
 import RequireAuth from './HOCs/require_auth'
+import RequireAdminAuth from './HOCs/require_admin'
 
 import 'bulma/css/bulma.css'
 import 'font-awesome-webpack'
@@ -34,8 +34,7 @@ class App extends Component {
             <Route exact path="/editpost/:id" component={RequireAuth(EditPost)} />
             <Route exact path="/newcomment" component={RequireAuth(NewComment)} />
             <Route exact path="/editcomment/:id" component={RequireAuth(EditComment)} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/admin" component={Admin} />
+            <Route exact path="/admin" component={RequireAdminAuth(Admin)} />
           </Switch>
         </div>
       </Router>
