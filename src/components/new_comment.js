@@ -8,13 +8,6 @@ import { updateEditorContent, saveComment, sendError } from '../actions'
 
 class NewComment extends Component {
 
-    componentWillMount() {
-        if (!this.props.user) {
-            this.props.history.go(-1)
-            this.props.sendError('You have to be logged in to comment')
-        }
-    }
-
     updateText(contentState) {
         this.props.updateEditorContent({...this.props.content, content: contentState, post: this.props.location.state.post, parent: this.props.location.state.parent })
     }
@@ -48,7 +41,6 @@ class NewComment extends Component {
 function mapStateToProps(state) {
     return {
         content: state.editorContent,
-        user: state.user
     }
 }
 

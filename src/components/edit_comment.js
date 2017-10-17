@@ -9,10 +9,6 @@ import { updateEditorContent, saveEditedComment, sendError, getComment } from '.
 class EditComment extends Component {
 
     componentWillMount() {
-        if (!this.props.user) {
-            this.props.history.go(-1)
-            this.props.sendError('You have to be logged in to edit this comment')
-        }
         this.props.getComment(this.props.match.params.id)
     }
 
@@ -66,7 +62,6 @@ class EditComment extends Component {
 function mapStateToProps(state) {
     return {
         content: state.editorContent,
-        user: state.user,
         comment: state.comments[0] || {}
     }
 }

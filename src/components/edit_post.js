@@ -9,10 +9,6 @@ import { updateEditorContent, saveEditedPost, sendError, getPost } from '../acti
 class NewPost extends Component {
 
     componentWillMount() {
-        if (!this.props.user) {
-            this.props.history.go(-1)
-            this.props.sendError('You have to be logged in to post')
-        }
         this.props.getPost(this.props.match.params.id)
     }
 
@@ -86,7 +82,6 @@ class NewPost extends Component {
 function mapStateToProps(state) {
     return {
         content: state.editorContent,
-        user: state.user,
         post: state.posts
     }
 }

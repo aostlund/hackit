@@ -8,13 +8,6 @@ import { updateEditorContent, savePost, sendError } from '../actions'
 
 class NewPost extends Component {
 
-    componentWillMount() {
-        if (!this.props.user) {
-            this.props.history.go(-1)
-            this.props.sendError('You have to be logged in to post')
-        }
-    }
-
     updateText(contentState) {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
@@ -68,7 +61,6 @@ class NewPost extends Component {
 function mapStateToProps(state) {
     return {
         content: state.editorContent,
-        user: state.user
     }
 }
 
