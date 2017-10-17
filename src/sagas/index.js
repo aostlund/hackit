@@ -27,6 +27,7 @@ export default function* rootSaga() {
         Auth.watchLoginUser(),
         Auth.watchLogoutUser(),
         Auth.watchSignupUser(),
+        Auth.watchSignupWithGoogle(),
         error.watchClearError(),
         users.watchFetchAllUsers(),
         users.watchToggleAdmin(),

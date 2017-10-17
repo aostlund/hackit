@@ -7,6 +7,7 @@ import {
     LOGIN_USER,
     LOGOUT_USER,
     SIGNUP_USER,
+    SIGNUP_GOOGLE,
     ERROR
 } from '../actions/types'
 import firebase from 'firebase'
@@ -97,4 +98,15 @@ export function* signupUser({ payload: {displayname, email, password, history } 
 
 export function* watchSignupUser() {
     yield takeEvery(SIGNUP_USER, signupUser)
+}
+
+export function* signupGoogle() {
+    let provider = new firebase.auth.GoogleAuthProvider()
+    provider.addScope('profile')
+    provider.addScope('email')
+    yield firebase.auth().signInWithPopup(provider).then(result => result)
+}
+
+export function* watchSignupWithGoogle() {
+    yield takeEvery(SIGNUP_GOOGLE, signupGoogle)
 }

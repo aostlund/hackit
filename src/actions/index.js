@@ -26,7 +26,8 @@ import {
     TOGGLE_ADMIN,
     DELETE_USER,
     DELETE_POST,
-    DELETE_COMMENT
+    DELETE_COMMENT,
+    SIGNUP_GOOGLE
 } from './types'
 
 export function getPosts(payload) {
@@ -179,5 +180,11 @@ export function deleteComment(payload) {
     return {
         type: DELETE_COMMENT,
         payload,
+    }
+}
+
+export function signupGoogle() {
+    return {
+        type: SIGNUP_GOOGLE,
     }
 }

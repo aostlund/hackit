@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { loginUser } from '../actions'
+import { loginUser, signupGoogle } from '../actions'
 
 class Login extends Component {
 
@@ -65,6 +65,7 @@ class Login extends Component {
                                     </div>
                                 </div>
                             </form>
+                            <button className="button" style={{margin: "1rem 0"}} onClick={this.props.signupGoogle}>Login with Google</button>
                         </section>
                     </div>
                 </div>
@@ -73,4 +74,4 @@ class Login extends Component {
     }
 }
 
-export default connect(null, { loginUser, })(Login)
+export default connect(null, { loginUser, signupGoogle })(Login)
