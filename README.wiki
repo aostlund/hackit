@@ -26,8 +26,6 @@
 :::::* Extended error handling. Errors should be shown in the UI.
 :::::* Code layout and UI should have clear structure.
 
-Kravspecifikation för G
-
 :::: '''WORK PROCESS'''
 :::::: I started with the logic for the UI and Redux. Then I added firebase using Redux-saga.
 
