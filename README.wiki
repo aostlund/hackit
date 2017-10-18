@@ -1,0 +1,50 @@
+= '''Hackit''' =
+=== &ensp;&ensp; ABOUT THE PROJECT ===
+----
+
+:::: '''WHAT IS IT?'''
+:::::: Hackit is a hackernews/reddit clone [https://hackit.aostlund.com (Demo-page)]. It uses Firebase, Redux, React and Bulma.
+
+:::: '''WHY IS IT?'''
+:::::: This is the final project in the course "Advanced Webapplication Development 2". That is a part of [https://www.lernia.se/utbildning/distans/data-och-it/javascriptutvecklare-frontend-26659 "JavaScript developer - Frontend" Education by Lernia].
+
+:::: '''PROJECT CRITERIA'''
+:::::* Handle post/resource. Ability to vote/comment on the posted resource.
+:::::* Update should be realtime with Firebase event listeners.
+:::::* App should use React as frontend.
+:::::* App should use Redux handle state.
+:::::* Only the admin and user who posted/commented should be able to edit/delete.
+:::::* Firebase auth should be used, social login (Google, Facebook, etc) for extra credit.
+:::::* There should be one or several admin-users, the rest should be regular users.
+:::::* Admin should be able to edit/delete content and handle users.
+:::::* Logic and application-state should be as high up as possible.
+:::::* Components without logic should be stateless/functional components.
+:::::* Should be deployed live and production ready.
+:::::* App should be on GitHub and have a wellformated README.
+:::::* Use composition and have atleast two HOCs that's not part of external library.
+:::::* Should not leak info from development and be production ready.
+:::::* Extended error handling. Errors should be shown in the UI.
+:::::* Code layout and UI should have clear structure.
+
+Kravspecifikation för G
+
+:::: '''WORK PROCESS'''
+:::::: I started with the logic for the UI and Redux. Then I added firebase using Redux-saga.
+
+:::::: I used Bulma for the styling of the app, with minimum of custom styles. Responsiveness took secondhand and was checked and "fixed" at late stage.
+
+:::: '''THOUGHTS'''
+:::::: The look and function was kept basic. It might not be the best looking, but i think it is atleast functional and easy to understand.
+
+:::::: Some things could be better. The sagas is perhaps not as neat as they should be, that's caused by learning on the project. Same with the styling, Bulma was completly new to me although a great experience.
+
+:::::: Firebase is perhaps not the best database backend for this app. It lacks functions like skip needed for pagination. Making work around these shortcommings clien side.
+
+:::::: There are some things which I like to add or redo if I continue to work on this. Links to media should also embed it on the page and alot of cosmetic changes.
+----
+=== &ensp;&ensp; CONTACT ===
+----
+:::: '''E-MAIL'''
+:::::: [mailto:andreas.ostlund@spelpunkten.com]
+:::: '''LINKEDIN'''
+:::::: [https://www.linkedin.com/in/andreas-östlund-42945467 My LinkedIn Profile]
