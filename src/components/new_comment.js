@@ -12,6 +12,7 @@ class NewComment extends Component {
         this.props.updateEditorContent({...this.props.content, content: contentState, post: this.props.location.state.post, parent: this.props.location.state.parent })
     }
 
+    // Saves comment
     saveComment() {
         this.props.saveComment({ content: this.props.content, history: this.props.history })
     }

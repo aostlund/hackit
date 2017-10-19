@@ -8,18 +8,22 @@ import { updateEditorContent, savePost, sendError } from '../actions'
 
 class NewPost extends Component {
 
+    // Sets editor content
     updateText(contentState) {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
+    // Sets title value
     updateTitle = (e) => {
         this.props.updateEditorContent({...this.props.content, title: e.target.value })
     }
 
+    // Sets link value
     updateLink = (e) => {
         this.props.updateEditorContent({...this.props.content, link: e.target.value })
     }
 
+    // Saves post
     savePost() {
         this.props.savePost({ content: this.props.content, history: this.props.history })
     }

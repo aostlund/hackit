@@ -12,10 +12,12 @@ class EditComment extends Component {
         this.props.getComment(this.props.match.params.id)
     }
 
+    // Updates editorState
     updateText(contentState) {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
+    // Saves comment if anythings been edited
     saveComment() {
         if (!this.props.content.content) {
             this.props.sendError('You have not typed anything new')
@@ -30,6 +32,7 @@ class EditComment extends Component {
         }
     }
 
+    // Only show editor if the right contents been loaded
     showEditor = () => {
         if (this.props.comment.content && this.props.match.params.id === this.props.comment.id) {
             if (this.props.user.uid === this.props.comment.user) {

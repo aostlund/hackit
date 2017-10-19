@@ -12,18 +12,22 @@ class NewPost extends Component {
         this.props.getPost(this.props.match.params.id)
     }
 
+    // Set content of editor
     updateText(contentState) {
         this.props.updateEditorContent({...this.props.content, content: contentState})
     }
 
+    // Set title value
     updateTitle = (e) => {
         this.props.updateEditorContent({...this.props.content, title: e.target.value })
     }
 
+    // Set link value
     updateLink = (e) => {
         this.props.updateEditorContent({...this.props.content, link: e.target.value })
     }
 
+    // Saves post if anythings edited
     savePost() {
         if (!this.props.content) {
             this.props.sendError('You have not changed anything')
