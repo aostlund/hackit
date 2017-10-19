@@ -10,9 +10,9 @@ export default (props) => {
                 <figure className="media-left">
                 </figure>
                 <div className="media-content">
-                    <a className="title is-4 has-text-primary" href={props.link ? `http://${props.link}` : `/comments/${props.id}`}>
+                    <a className="title is-4 has-text-primary" href={props.link ? props.link : `/comments/${props.id}`}>
                         {props.title} 
-                        <small className="has-text-grey is-6">{`  (${props.link || 'self'})`}</small>
+                        <small className="has-text-grey is-6">{`(${props.link ? new URL(props.link).hostname : 'self'})`}</small>
                     </a>
                     <p><small>submitted by </small><strong>{props.userName}</strong></p>
                     {props.html ? <div dangerouslySetInnerHTML={{__html: props.html}} /> : ''}

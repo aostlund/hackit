@@ -138,7 +138,7 @@ export function* savePost({ payload: { content, history }}) {
     yield firebase.database().ref('posts').push({
         content: JSON.stringify(content.content),
         title: content.title,
-        link: content.link,
+        link: ~content.link.indexOf('http') || content.link === '' ? content.link : `http://${content.link}`, //make sure we add "http://" if link doesn´t have it
         score: 0,
         comments: 0,
         user: yield firebase.auth().currentUser.uid,
