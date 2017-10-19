@@ -48,7 +48,8 @@ class NewPost extends Component {
     render() {
         if (this.props.post.posts && this.props.post.posts.length === 1) {
             let post = this.props.post.posts[0]
-            if (this.props.user.uid === post.user) {
+            if (this.props.user.uid === post.user || this.props.user.admin) {
+                console.log(post)
                 return (
                     <article className="box">
                         <div className="field">
@@ -64,7 +65,7 @@ class NewPost extends Component {
                             </div>
                         </div>
                         <Editor
-                            initialContentState={post.content}
+                            initialContentState={JSON.parse(post.content)}
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
@@ -76,6 +77,7 @@ class NewPost extends Component {
             } else {
                 this.props.sendError('You can not edit another users post')
                 this.props.history.go(-1)
+                return <div/>
             }
         } else {
             return <div/>

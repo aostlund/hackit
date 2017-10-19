@@ -35,7 +35,7 @@ class EditComment extends Component {
     // Only show editor if the right contents been loaded
     showEditor = () => {
         if (this.props.comment.content && this.props.match.params.id === this.props.comment.id) {
-            if (this.props.user.uid === this.props.comment.user) {
+            if (this.props.user.uid === this.props.comment.user || this.props.user.admin) {
                 return (
                     <Editor
                         initialContentState={JSON.parse(this.props.comment.content)}
@@ -48,6 +48,7 @@ class EditComment extends Component {
             } else {
                 this.props.sendError('You cannot edit another users comment')
                 this.props.history.go(-1)
+                return <div/>
             }
         }
     }
