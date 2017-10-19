@@ -180,6 +180,10 @@ export function* watchGetComment() {
 // Deletes a comment
 export function* deleteComment({ payload }) {
     let error = yield firebase.database().ref(`comments/${payload.id}`).remove().catch(error => error)
+    let post = yield firebase.database().ref(`posts/${payload.post}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+    yield firebase.database().ref(`posts/${payload.post}`).update({
+        "comments": (post.comments || 0) - 1
+    }).catch(e => error = e)
     if (error && error.messge) {
         yield put({
             type: ERROR,
