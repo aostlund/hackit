@@ -10,11 +10,13 @@ class Login extends Component {
         modal: false
     }
 
+    // Logs in user
     loginUser = e => {
         e.preventDefault()
         this.props.loginUser({ email: this.state.email, password: this.state.password })
     }
 
+    // Update state of login info values
     updateState = e => {
         this.setState({[e.target.name]: e.target.value})
     }

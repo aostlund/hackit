@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { logoutUser } from '../actions'
 
 class Logout extends Component {
-
     logoutUser = () => {
         this.props.logoutUser()
     }

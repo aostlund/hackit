@@ -11,10 +11,12 @@ class Signup extends Component {
         modal: false
     }
 
+    // Updates signup values
     updateState = e => {
         this.setState({ [e.target.name]: e.target.value })
     }
 
+    // Signs user up
     signup = e => {
         e.preventDefault()
         this.props.signup({...this.state, history: this.props.history })

@@ -7,6 +7,7 @@ import Signup from './signup'
 
 class Header extends Component {
 
+    // Shows Login/Signup if no user is logged in eles shows Post link, username and Logout button.
     loggedIn = () => {
         if (this.props.user) {
             return (
@@ -30,6 +31,7 @@ class Header extends Component {
         )
     }
 
+    // Shows error if one is set
     showError = () => {
         if (this.props.error) {
             return (
@@ -40,6 +42,7 @@ class Header extends Component {
         }
     }
 
+    // Shows admin link if user has admin rights
     isAdmin = () => {
         if (this.props.user && this.props.user.admin) {
             return (
