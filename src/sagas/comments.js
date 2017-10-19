@@ -17,12 +17,16 @@ import {
 } from '../actions/types'
 import firebase from 'firebase'
 
+// Changes comment score
 export function* changeCommentScore(update) {
     let error = {}
     let currentUser = yield firebase.auth().currentUser
+    // User has to be logged in to vote
     if(currentUser) {
         let user = yield firebase.database().ref(`users/${currentUser.uid}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-        if (user[update.payload.id]) {
+        // Has the user voted previously
+        if (user[update.payload.id]) { 
+            // User cant move score more than one point either direction
             if ((user[update.payload.id] + update.payload.change) > 1 || (user[update.payload.id] + update.payload.change) < -1) {
                 yield put({
                     type: ERROR,
@@ -55,11 +59,12 @@ export function* changeCommentScore(update) {
     }
 }
 
+// Watches for action of type CHANGE_COMMENT_SCORE
 export function* watchChangeCommentScore() {
     yield takeEvery(CHANGE_COMMENT_SCORE, changeCommentScore)
 }
 
-
+// Saves comment
 export function* saveComment({ payload: { content, history }}) {
     let error = yield firebase.database().ref('comments').push({
         content: JSON.stringify(content.content),
@@ -86,10 +91,12 @@ export function* saveComment({ payload: { content, history }}) {
     }
 }
 
+// Watches for action of type SAVE_COMMENT
 export function* watchSaveComment() {
     yield takeEvery(SAVE_COMMENT, saveComment)
 }
 
+// Save edited comment
 export function* saveEditedComment({ payload: { content, history, id}}) {
     let error = yield firebase.database().ref(`comments/${id}`).update({"content": JSON.stringify(content.content)}).catch(error => error)
     if (error && error.message) {
@@ -105,30 +112,12 @@ export function* saveEditedComment({ payload: { content, history, id}}) {
     }
 }
 
+// Watches for action of type SAVE_EDITED_COMMENT
 export function* watchSaveEditedComment() {
     yield takeEvery(SAVE_EDITED_COMMENT, saveEditedComment)
 }
 
-// export function* getComments({ payload }) {
-//     let error = {}
-//     let data = yield firebase.database().ref('comments').orderByChild('post').equalTo(payload.id).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
-//     if (error.message) {
-//         yield put({
-//             type: ERROR,
-//             payload: error.message
-//         })
-//     } else {
-//         yield put({
-//             type: GET_COMMENTS,
-//             payload: _.map(data, (val, id) => { return { id: id, ...val} })
-//         })
-//     }
-// }
-
-// export function* watchGetComments() {
-//     yield takeEvery(FETCH_COMMENTS, getComments)
-// }
-
+// Get comments
 export function getComments({ payload }) {
     const ref = firebase.database().ref('comments')
     return eventChannel(emit => {
@@ -143,6 +132,7 @@ export function getComments({ payload }) {
     })
 }
 
+// Puts GET_COMMENT action out
 export function* putComments(payload) {
     yield put({
         type: GET_COMMENTS,
@@ -150,6 +140,7 @@ export function* putComments(payload) {
     })
 }
 
+// Creates channel to listen to changes in comments.
 export function* watchCommentsChannel(payload) {
     let channel = yield call(getComments, payload)
 
@@ -159,9 +150,12 @@ export function* watchCommentsChannel(payload) {
     channel.close()
 }
 
+// Watches for action of type FETCH_COMMENTS
 export function* watchGetComments() {
     yield takeLatest(FETCH_COMMENTS, watchCommentsChannel)
 }
+
+// Gets a comments
 export function* getComment({ payload }) {
     let error = {}
     let comment = yield firebase.database().ref(`comments/${payload}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
@@ -178,10 +172,12 @@ export function* getComment({ payload }) {
     }
 }
 
+// Watches for action of type FETCH_COMMENT
 export function* watchGetComment() {
     yield takeEvery(FETCH_COMMENT, getComment)
 }
 
+// Deletes a comment
 export function* deleteComment({ payload }) {
     let error = yield firebase.database().ref(`comments/${payload.id}`).remove().catch(error => error)
     if (error && error.messge) {
@@ -192,6 +188,7 @@ export function* deleteComment({ payload }) {
     }
 }
 
+// Watches for action of type DELETE_COMMENT
 export function* watchDeleteComment() {
     yield takeEvery(DELETE_COMMENT, deleteComment)
 }

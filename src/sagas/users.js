@@ -11,6 +11,7 @@ import {
 } from '../actions/types'
 import firebase from 'firebase'
 
+// Fetches all users
 export function* fetchAllUsers() {
     const ref = firebase.database().ref('users')
     const channel = eventChannel(emit => {
@@ -29,12 +30,13 @@ export function* fetchAllUsers() {
     })
 }
 
+// Watches for an action of type FETCH_ALL_USERS
 export function* watchFetchAllUsers() {
     yield takeEvery(FETCH_ALL_USERS, fetchAllUsers)
 }
 
+// Toggle the user admin status
 export function* toggleAdmin({ payload }) {
-    console.log('cu', firebase.auth().currentUser.uid, 'pl', payload.uid)
     if (yield firebase.auth().currentUser.uid === payload.uid) {
         yield put({
             type: ERROR,
@@ -45,14 +47,17 @@ export function* toggleAdmin({ payload }) {
     }
 }
 
+// Watches for an action of type TOGGLE_ADMIN
 export function* watchToggleAdmin() {
     yield takeEvery(TOGGLE_ADMIN, toggleAdmin)
 }
 
+// Sets delete property to true
 export function* deleteUser({ payload }) {
     yield firebase.database().ref(`users/${payload.uid}`).update({ delete: true })
 }
 
+// Watches for an action of type DELETE_USER
 export function* watchDeleteUser() {
     yield takeEvery(DELETE_USER, deleteUser)
 }

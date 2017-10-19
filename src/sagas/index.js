@@ -6,8 +6,7 @@ import * as Auth from './auth'
 import * as error from './error'
 import * as users from './users'
 
-
-
+// Sets up watchers for actions
 export default function* rootSaga() {
     yield all([
         Posts.watchDelayedGet(),

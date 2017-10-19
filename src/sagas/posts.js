@@ -4,7 +4,7 @@ import { eventChannel } from 'redux-saga'
 import { put, takeEvery, cancelled, take, takeLatest, call } from 'redux-saga/effects'
 import { 
     GET_POSTS,
-    DELAYED_GET_POSTS,
+    FETCH_POSTS,
     CHANGE_POST_SCORE,
     SAVE_POST,
     SAVE_EDITED_POST,
@@ -19,7 +19,8 @@ import {
 } from '../actions/types'
 import firebase from 'firebase'
 
-export function delayedGet({payload: {start, perPage, score}}) {
+// Gets posts
+export function* fetchPosts({payload: {start, perPage, score}}) {
     const ref = firebase.database().ref('posts')
     return eventChannel(emit => {
         const cb = ref.orderByChild('score').endAt(score, start).limitToLast(perPage).on('value',
@@ -34,6 +35,7 @@ export function delayedGet({payload: {start, perPage, score}}) {
     })
 }
 
+// Puts out action GET_POST with comments as payload
 export function* getPosts(payload) {
     yield put({
         type: GET_POSTS,
@@ -41,8 +43,9 @@ export function* getPosts(payload) {
     })
 }
 
+// Creates and listens to posts channel
 export function* watchPostsChannel(payload) {
-    let channel = yield call(delayedGet, payload)
+    let channel = yield call(fetchPosts, payload)
 
     yield takeEvery(channel, getPosts)
 
@@ -50,10 +53,12 @@ export function* watchPostsChannel(payload) {
     channel.close()
 }
 
+// Watches for an action of type FETCH_POST
 export function* watchDelayedGet() {
-    yield takeLatest(DELAYED_GET_POSTS, watchPostsChannel)
+    yield takeLatest(FETCH_POSTS, watchPostsChannel)
 }
 
+// Returns number of posts (unused)
 export function* numPosts() {
     let error = {}
     let data = yield fetch('https://webapp2-8a6f8.firebaseio.com/posts.json?shallow=true')
@@ -73,13 +78,16 @@ export function* numPosts() {
     }
 }
 
+// Watches for an action of type GET_NUM_POSTS
 export function* watchNumPosts() {
     yield takeEvery(GET_NUM_POSTS, numPosts)
 }
 
+// Changes score on post
 export function* changePostScore(update) {
     let error = {}
     let currentUser = yield firebase.auth().currentUser
+    // Only logged in users can vote
     if (!currentUser) {
         yield put({
             type: ERROR,
@@ -87,7 +95,9 @@ export function* changePostScore(update) {
         })
     } else {
         let user = yield firebase.database().ref(`users/${currentUser.uid}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
+        // Has the user voted on this post previously
         if (user[update.payload.id]) {
+            // User can only move score one point in either direction
             if (user[update.payload.id] + update.payload.change > 1 || user[update.payload.id] + update.payload.change < -1) {
                 yield put({
                     type: ERROR,
@@ -114,10 +124,12 @@ export function* changePostScore(update) {
     }
 }
 
+// Watches for an action of type CHANGE_POST_SCORE
 export function* watchChangePostScore() {
     yield takeEvery(CHANGE_POST_SCORE, changePostScore)
 }
 
+// Saves post
 export function* savePost({ payload: { content, history }}) {
     let error = {}
     if (!content.link) {
@@ -144,10 +156,13 @@ export function* savePost({ payload: { content, history }}) {
         history.push('/')
     }
 }
+
+// Watches for an action of type SAVE_POST
 export function* watchSavePost() {
     yield takeEvery(SAVE_POST, savePost)
 }
 
+// Saves edited post
 export function* saveEditedPost({ payload: { content, history, id}}) {
     if (content.content) {
         content.content = JSON.stringify(content.content)
@@ -166,10 +181,12 @@ export function* saveEditedPost({ payload: { content, history, id}}) {
     }
 }
 
+// Watches for an action of type SAVE_EDITED_POST
 export function* watchSaveEditedPost() {
     yield takeEvery(SAVE_EDITED_POST, saveEditedPost)
 }
 
+// Fetches post
 export function* fetchPost({ payload }) {
     const ref = firebase.database().ref(`posts/${payload}`)
     return eventChannel(emit => {
@@ -184,6 +201,7 @@ export function* fetchPost({ payload }) {
     })
 }
 
+// Puts action of GET_POST with payload of the fetched post
 export function* putPost(payload) {
     yield put({
         type: GET_POST,
@@ -191,6 +209,7 @@ export function* putPost(payload) {
     })
 }
 
+// Creates a post channel and listens to it
 export function* watchPostChannel(payload) {
     let channel = yield call(fetchPost, payload)
 
@@ -200,10 +219,12 @@ export function* watchPostChannel(payload) {
     channel.close()
 }
 
+// Watches for an action of type FETCH_POST
 export function* watchFetchPost() {
     yield takeEvery(FETCH_POST, watchPostChannel)
 }
 
+// Deletes post
 export function* deletePost({ payload }) {
     let error = yield firebase.database().ref(`posts/${payload.id}`).remove().catch(error => error)
     if (error && error.messge) {
@@ -216,6 +237,7 @@ export function* deletePost({ payload }) {
     }
 }
 
+// Watches for an action of type DELETE_POST
 export function* watchDeletePost() {
     yield takeEvery(DELETE_POST, deletePost)
 }

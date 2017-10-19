@@ -6,6 +6,7 @@ import {
     CLEAR_ERROR
 } from '../actions/types'
 
+// Sends clear error action after three seconds
 export function* clearError() {
     yield delay(3000)
     yield put({
@@ -13,6 +14,7 @@ export function* clearError() {
     })
 }
 
+// Watches for action of type ERROR
 export function* watchClearError() {
     yield takeEvery(ERROR, clearError)
 }
