@@ -49,19 +49,22 @@ class NewPost extends Component {
         if (this.props.post.posts && this.props.post.posts.length === 1) {
             let post = this.props.post.posts[0]
             if (this.props.user.uid === post.user || this.props.user.admin) {
-                console.log(post)
                 return (
                     <article className="box">
                         <div className="field">
                             <label className="label">Title</label>
                             <div className="control">
-                                <input className="input" type="text" name="title" onChange={this.updateTitle} value={this.props.content.title || post.title} />
+                                <input className="input" type="text" name="title" onChange={this.updateTitle} 
+                                    value={this.props.content.hasOwnProperty('title') ? this.props.content.title : post.title}
+                                />
                             </div>
                         </div>
                         <div className="field">
                             <label className="label">Link</label>
                             <div className="control">
-                                <input className="input" type="text" name="link" onChange={this.updateLink} value={this.props.content.link || post.link} />
+                                <input className="input" type="text" name="link" onChange={this.updateLink}
+                                    value={this.props.content.hasOwnProperty('link') ? this.props.content.link : post.link}
+                                />
                             </div>
                         </div>
                         <Editor
