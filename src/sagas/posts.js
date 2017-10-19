@@ -167,6 +167,9 @@ export function* saveEditedPost({ payload: { content, history, id}}) {
     if (content.content) {
         content.content = JSON.stringify(content.content)
     }
+    if (content.link) {
+        content.link = ~content.link.indexOf('http') || content.link === '' ? content.link : `http://${content.link}`
+    }
     let error = yield firebase.database().ref(`posts/${id}`).update(content).catch(error => error)
     if (error && error.message) {
         yield put({
