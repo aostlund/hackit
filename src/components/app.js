@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, browserHistory, Switch, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { trackUserStatus } from '../actions'
 import Header from './header'
 import PostList from './post_list'
 import Comments from './comments'
@@ -17,11 +15,7 @@ import RequireAdminAuth from './HOCs/require_admin'
 import 'bulma/css/bulma.css'
 import 'font-awesome-webpack'
 
-class App extends Component {
-  componentDidMount() {
-    this.props.trackUserStatus()
-  }
-
+export default class App extends Component {
   render() {
     return (
       <Router>
@@ -41,5 +35,3 @@ class App extends Component {
     );
   }
 }
-
-export default connect(null, { trackUserStatus, })(App)

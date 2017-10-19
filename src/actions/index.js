@@ -10,7 +10,7 @@ export function getPost(id) {
 
 export function getPosts(payload) {
     return {
-        type: type.DELAYED_GET_POSTS,
+        type: type.FETCH_POSTS,
         payload: payload
     }
 }
@@ -105,12 +105,6 @@ export function deleteComment(payload) {
 }
 
 // Auth/User actions
-export function trackUserStatus() {
-    return {
-        type: type.TRACK_USER_STATUS
-    }
-}
-
 export function loginUser(payload) {
     return {
         type: type.LOGIN_USER,

@@ -8,15 +8,11 @@ import Vote from './vote'
 
 class Comments extends Component {
     componentWillMount() {
-        this.props.cancelPostChannel()
+        this.props.cancelPostChannel() // Cancel channel so we listen to the rigth post
         this.props.getPost(this.props.match.params.id)
         if (this.props.comments.length != 0) {
             this.props.cancelCommentsChannel()
         }
-        this.props.getComments({ id: this.props.match.params.id })
-    }
-
-    componentDidMount() {
         this.props.getComments({ id: this.props.match.params.id })
     }
 
@@ -26,6 +22,7 @@ class Comments extends Component {
         }
     }
 
+    // Does current User have rights to Edit comment or post. 
     canEdit = (target, path) => {
         if (this.props.user && (this.props.user.uid === target.user || this.props.user.admin)) {
             return(
@@ -34,6 +31,7 @@ class Comments extends Component {
         }
     }
 
+    // Does current User have rights to Delete comment or post. 
     canDelete = (target, type) => {
         if (this.props.user && this.props.user.admin) {
             if (type === 'post') {
@@ -44,6 +42,7 @@ class Comments extends Component {
         }
     }
 
+    // Lists comments with comment as a parent
     listChildComments(id) {
         const list = this.props.comments.filter(a => a.parent === id)
         if (list.length > 0) {
@@ -74,6 +73,7 @@ class Comments extends Component {
         return undefined
     }
 
+    // Lists comments that has no comment as a parent
     listComments() {
         const list = this.props.comments.filter(a => a.parent === 0)
         return list.sort((a,b) => a.score < b.score ? 1 : -1)
