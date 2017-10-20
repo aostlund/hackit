@@ -246,6 +246,7 @@ export function* watchFetchPost() {
 // Deletes post
 export function* deletePost({ payload }) {
     yield put({ type: LOADING })
+    yield put({ type: CANCEL_POST_CHANNEL })
     let error = yield firebase.database().ref(`posts/${payload.id}`).remove().catch(error => error)
     if (error && error.messge) {
         yield put({
