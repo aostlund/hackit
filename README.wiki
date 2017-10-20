@@ -4,7 +4,7 @@
 
 :::: '''WHAT IS IT?'''
 :::::: Hackit is a hackernews/reddit clone [https://hackit.aostlund.com (Demo-page)]. It uses Firebase, Redux, React and Bulma.
-[https://github.com/aostlund/hackit/blob/master/INSTALL.md (Installation instructions)
+[https://github.com/aostlund/hackit/blob/master/INSTALL.md (Installation instructions)]
 
 :::: '''WHY IS IT?'''
 :::::: This is the final project in the course "Advanced Webapplication Development 2". That is a part of [https://www.lernia.se/utbildning/distans/data-och-it/javascriptutvecklare-frontend-26659 "JavaScript developer - Frontend" Education by Lernia].
