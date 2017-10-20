@@ -38,7 +38,7 @@
 
 :::::: Firebase is perhaps not the best database backend for this app. It lacks functions like skip needed for pagination. Making work around for these shortcommings client side a must.
 
-:::::: There are some things which I like to add or redo if I continue to work on this. Links to media should also embed it on the page and alot of cosmetic changes. Test wera abandoned due to time constrains (bad excuse) and should be fixed and added back in.
+:::::: There are some things which I like to add or redo if I continue to work on this. Links to media should also embed it on the page and alot of cosmetic changes. Test was abandoned due to time constrains (bad excuse) and should be fixed and added back in.
 ----
 === &ensp;&ensp; CONTACT ===
 ----
