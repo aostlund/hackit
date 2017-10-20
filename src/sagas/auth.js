@@ -20,6 +20,7 @@ export function* watchTrackUserStatus() {
         const unsubscribe = firebase.auth().onAuthStateChanged(
             user => {
                 if (user) {
+                    // If users are empty then this, the first user, becomes admin
                     firebase.database().ref('users').once('value', snapshot => {
                         if (!snapshot.val()) {
                             firebase.database().ref(`users/${user.uid}`).set({
@@ -29,6 +30,7 @@ export function* watchTrackUserStatus() {
                                 delete: false 
                             })
                         } else {
+                            // If there are users but this one is not in the database we add it
                             const userReference = firebase.database().ref(`users/${user.uid}`)
                             userReference.once('value', snapshot => {
                                 if (!snapshot.val()) {
@@ -38,6 +40,7 @@ export function* watchTrackUserStatus() {
                                         admin: false,
                                         delete: false 
                                     })
+                                // If user is set to be deleted we do that now
                                 } else if (snapshot.val().delete) {
                                     user.delete()
                                     userReference.remove()
@@ -45,22 +48,6 @@ export function* watchTrackUserStatus() {
                             })
                         }
                     })
-                    // If user is only in auth put it in the database
-                    // const userReference = firebase.database().ref(`users/${user.uid}`)
-                    // userReference.once('value', snapshot => {
-                    //     if (!snapshot.val()) {
-                    //         userReference.set({
-                    //             email: user.email,
-                    //             displayName: user.displayName,
-                    //             admin: false,
-                    //             delete: false 
-                    //         })
-                        // If user is set to be deleted it we remove it both from database and auth
-                    //     } else if (snapshot.val().delete) {
-                    //         user.delete()
-                    //         userReference.remove()
-                    //     }
-                    // })
                 }
                 if (user) {
                     emit({ uid: user.uid, user: firebase.database().ref(`users/${user.uid}`).once('value') })
