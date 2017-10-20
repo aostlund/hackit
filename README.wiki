@@ -4,6 +4,7 @@
 
 :::: '''WHAT IS IT?'''
 :::::: Hackit is a hackernews/reddit clone [https://hackit.aostlund.com (Demo-page)]. It uses Firebase, Redux, React and Bulma.
+[https://github.com/aostlund/hackit/blob/master/INSTALL.md (Installation instructions)
 
 :::: '''WHY IS IT?'''
 :::::: This is the final project in the course "Advanced Webapplication Development 2". That is a part of [https://www.lernia.se/utbildning/distans/data-och-it/javascriptutvecklare-frontend-26659 "JavaScript developer - Frontend" Education by Lernia].
@@ -36,7 +37,7 @@
 
 :::::: Some things could be better. The sagas is perhaps not as neat as they should be, that's caused by learning on the project. Same with the styling, Bulma was completly new to me although a great experience.
 
-:::::: Firebase is perhaps not the best database backend for this app. It lacks functions like skip needed for pagination. Making work around these shortcommings clien side.
+:::::: Firebase is perhaps not the best database backend for this app. It lacks functions like skip needed for pagination. Making work around for these shortcommings client side a must.
 
 :::::: There are some things which I like to add or redo if I continue to work on this. Links to media should also embed it on the page and alot of cosmetic changes.
 ----
