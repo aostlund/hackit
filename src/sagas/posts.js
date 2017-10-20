@@ -131,9 +131,13 @@ export function* watchChangePostScore() {
 
 // Saves post
 export function* savePost({ payload: { content, history }}) {
+    console.log(content)
     let error = {}
     if (!content.link) {
         content.link = ''
+    }
+    if (!content.content) {
+        content.content = {}
     }
     yield firebase.database().ref('posts').push({
         content: JSON.stringify(content.content),

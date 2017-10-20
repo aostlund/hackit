@@ -49,7 +49,7 @@ class Comments extends Component {
             return list.sort((a,b) => a.score < b.score ? 1 : -1)
                 .map(comment => {
                     return (
-                        <div key={comment.id} className="media" style={{ borderLeft: 'solid lightgrey 1px'}}>
+                        <div key={comment.id} className="media" style={{ border: 'solid lightgrey 1px'}}>
                             <div className="media-left" />
                             <div className="media-content">
                                 <Comment {...comment} changeScore={this.props.changeScore} />
