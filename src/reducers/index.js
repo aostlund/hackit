@@ -5,6 +5,7 @@ import editorContent from './editor'
 import user from './user'
 import error from './error'
 import users from './users'
+import loading from './loading'
 
 const rootReducer = combineReducers({
   posts,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   user,
   error,
   users,
+  loading
 });
 
 export default rootReducer;

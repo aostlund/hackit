@@ -11,6 +11,7 @@ import Admin from './admin'
 
 import RequireAuth from './HOCs/require_auth'
 import RequireAdminAuth from './HOCs/require_admin'
+import Loading from './HOCs/loading'
 
 import 'bulma/css/bulma.css'
 import 'font-awesome-webpack'
@@ -22,13 +23,13 @@ export default class App extends Component {
         <div className="container">
           <Header />
           <Switch>
-            <Route exact path="/" component={PostList} />
-            <Route exact path="/comments/:id" component={Comments} />
-            <Route exact path="/newpost" component={RequireAuth(NewPost)} />
-            <Route exact path="/editpost/:id" component={RequireAuth(EditPost)} />
-            <Route exact path="/newcomment" component={RequireAuth(NewComment)} />
-            <Route exact path="/editcomment/:id" component={RequireAuth(EditComment)} />
-            <Route exact path="/admin" component={RequireAdminAuth(Admin)} />
+            <Route exact path="/" component={Loading(PostList)} />
+            <Route exact path="/comments/:id" component={Loading(Comments)} />
+            <Route exact path="/newpost" component={RequireAuth(Loading(NewPost))} />
+            <Route exact path="/editpost/:id" component={RequireAuth(Loading(EditPost))} />
+            <Route exact path="/newcomment" component={RequireAuth(Loading(NewComment))} />
+            <Route exact path="/editcomment/:id" component={RequireAuth(Loading(EditComment))} />
+            <Route exact path="/admin" component={RequireAdminAuth(Loading(Admin))} />
           </Switch>
         </div>
       </Router>

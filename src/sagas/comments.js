@@ -13,12 +13,15 @@ import {
     ERROR,
     CANCEL_COMMENTS_CHANNEL,
     DELETE_COMMENT,
-    CLEAR_EDITOR_CONTENT
+    CLEAR_EDITOR_CONTENT,
+    LOADING,
+    LOADING_FINISHED
 } from '../actions/types'
 import firebase from 'firebase'
 
 // Changes comment score
 export function* changeCommentScore(update) {
+    yield put({ type: LOADING })
     let error = {}
     let currentUser = yield firebase.auth().currentUser
     // User has to be logged in to vote
@@ -57,6 +60,7 @@ export function* changeCommentScore(update) {
             payload: 'You must be logged in to vote'
         })
     }
+    yield put({ type: LOADING_FINISHED, payload: 'vote comment' })
 }
 
 // Watches for action of type CHANGE_COMMENT_SCORE
@@ -66,6 +70,7 @@ export function* watchChangeCommentScore() {
 
 // Saves comment
 export function* saveComment({ payload: { content, history }}) {
+    yield put({ type: LOADING })
     let error = yield firebase.database().ref('comments').push({
         content: JSON.stringify(content.content),
         post: content.post,
@@ -87,6 +92,7 @@ export function* saveComment({ payload: { content, history }}) {
         yield put({
             type: CLEAR_EDITOR_CONTENT
         })
+        yield put({ type: LOADING_FINISHED, payload: 'save comment' })
         history.push(`/comments/${content.post}`)
     }
 }
@@ -98,6 +104,7 @@ export function* watchSaveComment() {
 
 // Save edited comment
 export function* saveEditedComment({ payload: { content, history, id}}) {
+    yield put({ type: LOADING })
     let error = yield firebase.database().ref(`comments/${id}`).update({"content": JSON.stringify(content.content)}).catch(error => error)
     if (error && error.message) {
         yield put({
@@ -110,6 +117,7 @@ export function* saveEditedComment({ payload: { content, history, id}}) {
         })
         history.go(-1)
     }
+    yield put({ type: LOADING_FINISHED, payload: 'save edited comment' })
 }
 
 // Watches for action of type SAVE_EDITED_COMMENT
@@ -134,6 +142,7 @@ export function getComments({ payload }) {
 
 // Puts GET_COMMENT action out
 export function* putComments(payload) {
+    yield put({ type: LOADING_FINISHED, payload: 'get comments' })
     yield put({
         type: GET_COMMENTS,
         payload: payload
@@ -153,10 +162,13 @@ export function* watchCommentsChannel(payload) {
 // Watches for action of type FETCH_COMMENTS
 export function* watchGetComments() {
     yield takeLatest(FETCH_COMMENTS, watchCommentsChannel)
+    yield take(FETCH_COMMENTS)
+    yield put({ type: LOADING })
 }
 
 // Gets a comments
 export function* getComment({ payload }) {
+    yield put({ type: LOADING })
     let error = {}
     let comment = yield firebase.database().ref(`comments/${payload}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
     if (error.message) {
@@ -170,6 +182,7 @@ export function* getComment({ payload }) {
             payload: {...comment, id: payload }
         })
     }
+    yield put({ type: LOADING_FINISHED, payload: 'get comment' })
 }
 
 // Watches for action of type FETCH_COMMENT
@@ -179,6 +192,7 @@ export function* watchGetComment() {
 
 // Deletes a comment
 export function* deleteComment({ payload }) {
+    yield put({ type: LOADING })
     let error = yield firebase.database().ref(`comments/${payload.id}`).remove().catch(error => error)
     let post = yield firebase.database().ref(`posts/${payload.post}`).once('value').then(snapshot => snapshot.val()).catch(e => error = e)
     yield firebase.database().ref(`posts/${payload.post}`).update({
@@ -190,6 +204,7 @@ export function* deleteComment({ payload }) {
             payload: error.message
         })
     }
+    yield put({ type: LOADING_FINISHED, payload: 'delete comment' })
 }
 
 // Watches for action of type DELETE_COMMENT

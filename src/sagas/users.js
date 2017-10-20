@@ -7,7 +7,9 @@ import {
     GET_ALL_USERS,
     TOGGLE_ADMIN,
     DELETE_USER,
-    ERROR
+    ERROR,
+    LOADING,
+    LOADING_FINISHED
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -27,16 +29,20 @@ export function* fetchAllUsers() {
             type: GET_ALL_USERS,
             payload,
         })
+        yield put({ type: LOADING_FINISHED })
     })
 }
 
 // Watches for an action of type FETCH_ALL_USERS
 export function* watchFetchAllUsers() {
     yield takeEvery(FETCH_ALL_USERS, fetchAllUsers)
+    yield take(FETCH_ALL_USERS)
+    yield put({ type: LOADING })
 }
 
 // Toggle the user admin status
 export function* toggleAdmin({ payload }) {
+    yield put({ type: LOADING })
     if (yield firebase.auth().currentUser.uid === payload.uid) {
         yield put({
             type: ERROR,
@@ -45,6 +51,7 @@ export function* toggleAdmin({ payload }) {
     } else {
        yield firebase.database().ref(`users/${payload.uid}`).update({ admin: !payload.admin })
     }
+    yield put({ type: LOADING_FINISHED })
 }
 
 // Watches for an action of type TOGGLE_ADMIN
@@ -54,7 +61,9 @@ export function* watchToggleAdmin() {
 
 // Sets delete property to true
 export function* deleteUser({ payload }) {
+    yield put({ type: LOADING })
     yield firebase.database().ref(`users/${payload.uid}`).update({ delete: true })
+    yield put({ type: LOADING_FINISHED })
 }
 
 // Watches for an action of type DELETE_USER

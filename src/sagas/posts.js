@@ -15,7 +15,9 @@ import {
     ERROR,
     CANCEL_POST_CHANNEL,
     DELETE_POST,
-    CLEAR_EDITOR_CONTENT
+    CLEAR_EDITOR_CONTENT,
+    LOADING,
+    LOADING_FINISHED
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -41,10 +43,12 @@ export function* getPosts(payload) {
         type: GET_POSTS,
         payload: payload
     })
+    yield put({ type: LOADING_FINISHED, payload: 'get posts' })
 }
 
 // Creates and listens to posts channel
 export function* watchPostsChannel(payload) {
+    yield put({ type: LOADING, payload: 'fetch post'})
     let channel = yield call(fetchPosts, payload)
 
     yield takeEvery(channel, getPosts)
@@ -55,7 +59,7 @@ export function* watchPostsChannel(payload) {
 
 // Watches for an action of type FETCH_POST
 export function* watchDelayedGet() {
-    yield takeLatest(FETCH_POSTS, watchPostsChannel)
+    yield takeEvery(FETCH_POSTS, watchPostsChannel)
 }
 
 // Returns number of posts (unused)
@@ -85,6 +89,7 @@ export function* watchNumPosts() {
 
 // Changes score on post
 export function* changePostScore(update) {
+    yield put({ type: LOADING })
     let error = {}
     let currentUser = yield firebase.auth().currentUser
     // Only logged in users can vote
@@ -122,6 +127,7 @@ export function* changePostScore(update) {
             })
         }
     }
+    yield put({ type: LOADING_FINISHED, payload: 'vote post' })
 }
 
 // Watches for an action of type CHANGE_POST_SCORE
@@ -131,7 +137,7 @@ export function* watchChangePostScore() {
 
 // Saves post
 export function* savePost({ payload: { content, history }}) {
-    console.log(content)
+    yield put({ type: LOADING })
     let error = {}
     if (!content.link) {
         content.link = ''
@@ -159,6 +165,7 @@ export function* savePost({ payload: { content, history }}) {
         })
         history.push('/')
     }
+    yield put({ type: LOADING_FINISHED, payload: 'save post' })
 }
 
 // Watches for an action of type SAVE_POST
@@ -168,6 +175,7 @@ export function* watchSavePost() {
 
 // Saves edited post
 export function* saveEditedPost({ payload: { content, history, id}}) {
+    yield put({ type: LOADING })
     if (content.content) {
         content.content = JSON.stringify(content.content)
     }
@@ -186,6 +194,7 @@ export function* saveEditedPost({ payload: { content, history, id}}) {
         })
         history.go(-1)
     }
+    yield put({ type: LOADING_FINISHED, payload: 'save edited post' })
 }
 
 // Watches for an action of type SAVE_EDITED_POST
@@ -214,6 +223,7 @@ export function* putPost(payload) {
         type: GET_POST,
         payload: payload
     })
+    yield put({ type: LOADING_FINISHED, payload: 'get post' })
 }
 
 // Creates a post channel and listens to it
@@ -229,10 +239,13 @@ export function* watchPostChannel(payload) {
 // Watches for an action of type FETCH_POST
 export function* watchFetchPost() {
     yield takeEvery(FETCH_POST, watchPostChannel)
+    yield take(FETCH_POST)
+    yield put({ type: LOADING })
 }
 
 // Deletes post
 export function* deletePost({ payload }) {
+    yield put({ type: LOADING })
     let error = yield firebase.database().ref(`posts/${payload.id}`).remove().catch(error => error)
     if (error && error.messge) {
         yield put({
@@ -242,6 +255,7 @@ export function* deletePost({ payload }) {
     } else {
         payload.history.push('/')
     }
+    yield put({ type: LOADING_FINISHED, payload: 'delete post' })
 }
 
 // Watches for an action of type DELETE_POST

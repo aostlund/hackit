@@ -52,7 +52,7 @@ class Login extends Component {
                                 <div className="field">
                                     <label className="label">E-mail</label>
                                     <div className="control">
-                                        <input className="input" type="text" name="email" onChange={this.updateState} value={this.state.email} placeholder="email@host.com"/>
+                                        <input className="input" type="email" name="email" onChange={this.updateState} value={this.state.email} placeholder="email@host.com"/>
                                     </div>
                                 </div>
                                 <div className="field">

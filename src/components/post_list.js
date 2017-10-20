@@ -14,7 +14,7 @@ class PostList extends Component {
     }
 
     componentWillMount() {
-        this.props.cancelPostChannel() // cancel existing post channel so we dont get poste we dont want
+        this.props.cancelPostChannel()
         this.props.getPosts({start: this.state.start, perPage: this.state.perPage, score: this.state.score })
     }
 

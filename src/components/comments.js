@@ -10,9 +10,7 @@ class Comments extends Component {
     componentWillMount() {
         this.props.cancelPostChannel() // Cancel channel so we listen to the rigth post
         this.props.getPost(this.props.match.params.id)
-        if (this.props.comments.length != 0) {
-            this.props.cancelCommentsChannel()
-        }
+        this.props.cancelCommentsChannel()
         this.props.getComments({ id: this.props.match.params.id })
     }
 

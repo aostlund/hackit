@@ -8,7 +8,9 @@ import {
     LOGOUT_USER,
     SIGNUP_USER,
     SIGNUP_GOOGLE,
-    ERROR
+    ERROR,
+    LOADING,
+    LOADING_FINISHED
 } from '../actions/types'
 import firebase from 'firebase'
 
@@ -61,7 +63,14 @@ export function* trackUserStatus({ uid, user }) {
 
 // Logs in user with email and password
 export function* loginUser({ payload: {email, password} }) {
+    yield put({
+        type: LOADING
+    })
     let error = yield firebase.auth().signInWithEmailAndPassword(email, password).catch(error => error)
+    yield put({
+        type: LOADING_FINISHED,
+        payload: 'login user'
+    })
     if (error.message) {
         yield put({ type: ERROR, payload: error.message})
     }
@@ -74,7 +83,14 @@ export function* watchLoginUser() {
 
 // Logs user out
 export function* logoutUser() {
-    firebase.auth().signOut()
+    yield put({
+        type: LOADING
+    })
+    yield firebase.auth().signOut()
+    yield put({
+        type: LOADING_FINISHED,
+        payload: 'logout'
+    })
 }
 
 // Watches for action of type LOGOUT_USER
@@ -85,6 +101,7 @@ export function* watchLogoutUser() {
 // Signs up user with email and password
 export function* signupUser({ payload: {displayname, email, password, history } }) {
     if (displayname != '') {
+        yield put({ type: LOADING})
         let error = yield firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => error)
         if (error || error.message) {
             yield put({
@@ -97,6 +114,7 @@ export function* signupUser({ payload: {displayname, email, password, history } 
             })
             yield firebase.database().ref(`users/${yield firebase.auth().currentUser.uid}`).update({displayName: displayname})
         }
+        yield put({ type: LOADING_FINISHED, payload: 'sign up user'})
     } else {
         yield put({
             type: ERROR,
@@ -112,10 +130,12 @@ export function* watchSignupUser() {
 
 // Signs user up with google social accounts. Also works to log them in.
 export function* signupGoogle() {
+    yield put({ type: LOADING})
     let provider = new firebase.auth.GoogleAuthProvider()
     provider.addScope('profile')
     provider.addScope('email')
     yield firebase.auth().signInWithPopup(provider).then(result => result)
+    yield put({ type: LOADING_FINISHED, payload: 'sign in google'})
 }
 
 // Watches for action of type SIGNUP_GOOGLE
