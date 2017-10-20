@@ -56,7 +56,7 @@ class Comments extends Component {
                                 <Link to={{
                                     pathname: '/newcomment',
                                     state: {
-                                        post: this.props.post.id,
+                                        post: this.props.post.posts[0].id,
                                         parent: comment.id
                                     }
                                 }} >Reply</Link>
@@ -86,7 +86,7 @@ class Comments extends Component {
                             <Link to={{
                                 pathname: '/newcomment',
                                 state: {
-                                    post: this.props.post.id,
+                                    post: this.props.post.posts[0].id,
                                     parent: comment.id
                                 }
                             }} >Reply</Link>
