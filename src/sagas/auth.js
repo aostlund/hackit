@@ -20,22 +20,47 @@ export function* watchTrackUserStatus() {
         const unsubscribe = firebase.auth().onAuthStateChanged(
             user => {
                 if (user) {
-                    // If user is only in auth put it in the database
-                    const userReference = firebase.database().ref(`users/${user.uid}`)
-                    userReference.once('value', snapshot => {
+                    firebase.database().ref('users').once('value', snapshot => {
                         if (!snapshot.val()) {
-                            userReference.set({
+                            firebase.database().ref(`users/${user.uid}`).set({
                                 email: user.email,
                                 displayName: user.displayName,
-                                admin: false,
+                                admin: true,
                                 delete: false 
                             })
-                        // If user is set to be deleted it we remove it both from database and auth
-                        } else if (snapshot.val().delete) {
-                            user.delete()
-                            userReference.remove()
+                        } else {
+                            const userReference = firebase.database().ref(`users/${user.uid}`)
+                            userReference.once('value', snapshot => {
+                                if (!snapshot.val()) {
+                                    userReference.set({
+                                        email: user.email,
+                                        displayName: user.displayName,
+                                        admin: false,
+                                        delete: false 
+                                    })
+                                } else if (snapshot.val().delete) {
+                                    user.delete()
+                                    userReference.remove()
+                                }
+                            })
                         }
                     })
+                    // If user is only in auth put it in the database
+                    // const userReference = firebase.database().ref(`users/${user.uid}`)
+                    // userReference.once('value', snapshot => {
+                    //     if (!snapshot.val()) {
+                    //         userReference.set({
+                    //             email: user.email,
+                    //             displayName: user.displayName,
+                    //             admin: false,
+                    //             delete: false 
+                    //         })
+                        // If user is set to be deleted it we remove it both from database and auth
+                    //     } else if (snapshot.val().delete) {
+                    //         user.delete()
+                    //         userReference.remove()
+                    //     }
+                    // })
                 }
                 if (user) {
                     emit({ uid: user.uid, user: firebase.database().ref(`users/${user.uid}`).once('value') })
@@ -103,7 +128,7 @@ export function* signupUser({ payload: {displayname, email, password, history } 
     if (displayname != '') {
         yield put({ type: LOADING})
         let error = yield firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => error)
-        if (error || error.message) {
+        if (error && error.message) {
             yield put({
                 type: ERROR,
                 payload: error.message
